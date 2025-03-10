@@ -10,7 +10,7 @@ The text files for each book of the King James Bible can be accessed via [https:
 # Install Bible Search Engine
 The Bible Search Engine can be downloaded by pip.
 ```commandline
-pip install bible_search_engine_ronenh24
+pip install bible_search_engine
 ```
 
 
@@ -19,7 +19,7 @@ The Bible search engine can be created with the `create_bible_search_engine` fun
 
 For example,
 ```
-from bible_search_engine_ronenh24.pipeline import create_bible_search_engine
+from bible_search_engine.pipeline import create_bible_search_engine
 bible_search_engine = create_bible_search_engine("src/bible_search_engine/initial_ranker.pkl")
 ```
 .
