@@ -1,0 +1,81 @@
+Ranker,Ranker Type,Precision at 15,Query
+Random,Baseline,0.0,What did God do to unloyal servants?
+Random,Baseline,0.0,"If God is merciful and kind, why do people still suffer in this world?"
+Random,Baseline,0.0,How do we get saved and know when we are saved?
+Random,Baseline,0.0,Where does God show up in our lives if he is not bounded by this world?
+Random,Baseline,0.0,Who were the kings of Israel and were they faithful to God?
+Random,Baseline,0.0,What does God say about spirituality?
+Random,Baseline,0.0,Why did Jesus die on the cross?
+Random,Baseline,0.0,How do we face discrimination and injustice?
+Random,Baseline,0.13333333333333333,Where do we find comfort and peace?
+Random,Baseline,0.13333333333333333,Who are the enemies of God?
+TF-IDF,Baseline,0.0,What did God do to unloyal servants?
+TF-IDF,Baseline,0.06666666666666667,"If God is merciful and kind, why do people still suffer in this world?"
+TF-IDF,Baseline,0.0,How do we get saved and know when we are saved?
+TF-IDF,Baseline,0.2,Where does God show up in our lives if he is not bounded by this world?
+TF-IDF,Baseline,0.26666666666666666,Who were the kings of Israel and were they faithful to God?
+TF-IDF,Baseline,0.2,What does God say about spirituality?
+TF-IDF,Baseline,0.4666666666666667,Why did Jesus die on the cross?
+TF-IDF,Baseline,0.0,How do we face discrimination and injustice?
+TF-IDF,Baseline,0.13333333333333333,Where do we find comfort and peace?
+TF-IDF,Baseline,0.0,Who are the enemies of God?
+BM25,Baseline,0.06666666666666667,What did God do to unloyal servants?
+BM25,Baseline,0.06666666666666667,"If God is merciful and kind, why do people still suffer in this world?"
+BM25,Baseline,0.06666666666666667,How do we get saved and know when we are saved?
+BM25,Baseline,0.0,Where does God show up in our lives if he is not bounded by this world?
+BM25,Baseline,0.0,Who were the kings of Israel and were they faithful to God?
+BM25,Baseline,0.0,What does God say about spirituality?
+BM25,Baseline,0.3333333333333333,Why did Jesus die on the cross?
+BM25,Baseline,0.0,How do we face discrimination and injustice?
+BM25,Baseline,0.13333333333333333,Where do we find comfort and peace?
+BM25,Baseline,0.0,Who are the enemies of God?
+L2R (num_leaves 5),Bible Search Engine,0.06666666666666667,What did God do to unloyal servants?
+L2R (num_leaves 5),Bible Search Engine,0.5333333333333333,"If God is merciful and kind, why do people still suffer in this world?"
+L2R (num_leaves 5),Bible Search Engine,0.2,How do we get saved and know when we are saved?
+L2R (num_leaves 5),Bible Search Engine,0.4,Where does God show up in our lives if he is not bounded by this world?
+L2R (num_leaves 5),Bible Search Engine,0.4,Who were the kings of Israel and were they faithful to God?
+L2R (num_leaves 5),Bible Search Engine,0.4,What does God say about spirituality?
+L2R (num_leaves 5),Bible Search Engine,0.6,Why did Jesus die on the cross?
+L2R (num_leaves 5),Bible Search Engine,0.13333333333333333,How do we face discrimination and injustice?
+L2R (num_leaves 5),Bible Search Engine,0.2,Where do we find comfort and peace?
+L2R (num_leaves 5),Bible Search Engine,0.2,Who are the enemies of God?
+L2R (num_leaves 10),Bible Search Engine,0.4666666666666667,What did God do to unloyal servants?
+L2R (num_leaves 10),Bible Search Engine,0.5333333333333333,"If God is merciful and kind, why do people still suffer in this world?"
+L2R (num_leaves 10),Bible Search Engine,0.13333333333333333,How do we get saved and know when we are saved?
+L2R (num_leaves 10),Bible Search Engine,0.3333333333333333,Where does God show up in our lives if he is not bounded by this world?
+L2R (num_leaves 10),Bible Search Engine,0.4,Who were the kings of Israel and were they faithful to God?
+L2R (num_leaves 10),Bible Search Engine,0.3333333333333333,What does God say about spirituality?
+L2R (num_leaves 10),Bible Search Engine,0.6666666666666666,Why did Jesus die on the cross?
+L2R (num_leaves 10),Bible Search Engine,0.26666666666666666,How do we face discrimination and injustice?
+L2R (num_leaves 10),Bible Search Engine,0.2,Where do we find comfort and peace?
+L2R (num_leaves 10),Bible Search Engine,0.3333333333333333,Who are the enemies of God?
+L2R (num_leaves 15),Bible Search Engine,0.26666666666666666,What did God do to unloyal servants?
+L2R (num_leaves 15),Bible Search Engine,0.4666666666666667,"If God is merciful and kind, why do people still suffer in this world?"
+L2R (num_leaves 15),Bible Search Engine,0.2,How do we get saved and know when we are saved?
+L2R (num_leaves 15),Bible Search Engine,0.26666666666666666,Where does God show up in our lives if he is not bounded by this world?
+L2R (num_leaves 15),Bible Search Engine,0.4,Who were the kings of Israel and were they faithful to God?
+L2R (num_leaves 15),Bible Search Engine,0.3333333333333333,What does God say about spirituality?
+L2R (num_leaves 15),Bible Search Engine,0.4666666666666667,Why did Jesus die on the cross?
+L2R (num_leaves 15),Bible Search Engine,0.2,How do we face discrimination and injustice?
+L2R (num_leaves 15),Bible Search Engine,0.26666666666666666,Where do we find comfort and peace?
+L2R (num_leaves 15),Bible Search Engine,0.2,Who are the enemies of God?
+L2R (num_leaves 20),Bible Search Engine,0.5333333333333333,What did God do to unloyal servants?
+L2R (num_leaves 20),Bible Search Engine,0.4,"If God is merciful and kind, why do people still suffer in this world?"
+L2R (num_leaves 20),Bible Search Engine,0.26666666666666666,How do we get saved and know when we are saved?
+L2R (num_leaves 20),Bible Search Engine,0.26666666666666666,Where does God show up in our lives if he is not bounded by this world?
+L2R (num_leaves 20),Bible Search Engine,0.3333333333333333,Who were the kings of Israel and were they faithful to God?
+L2R (num_leaves 20),Bible Search Engine,0.3333333333333333,What does God say about spirituality?
+L2R (num_leaves 20),Bible Search Engine,0.5333333333333333,Why did Jesus die on the cross?
+L2R (num_leaves 20),Bible Search Engine,0.26666666666666666,How do we face discrimination and injustice?
+L2R (num_leaves 20),Bible Search Engine,0.2,Where do we find comfort and peace?
+L2R (num_leaves 20),Bible Search Engine,0.2,Who are the enemies of God?
+L2R (num_leaves 25),Bible Search Engine,0.3333333333333333,What did God do to unloyal servants?
+L2R (num_leaves 25),Bible Search Engine,0.6,"If God is merciful and kind, why do people still suffer in this world?"
+L2R (num_leaves 25),Bible Search Engine,0.13333333333333333,How do we get saved and know when we are saved?
+L2R (num_leaves 25),Bible Search Engine,0.2,Where does God show up in our lives if he is not bounded by this world?
+L2R (num_leaves 25),Bible Search Engine,0.5333333333333333,Who were the kings of Israel and were they faithful to God?
+L2R (num_leaves 25),Bible Search Engine,0.3333333333333333,What does God say about spirituality?
+L2R (num_leaves 25),Bible Search Engine,0.5333333333333333,Why did Jesus die on the cross?
+L2R (num_leaves 25),Bible Search Engine,0.3333333333333333,How do we face discrimination and injustice?
+L2R (num_leaves 25),Bible Search Engine,0.13333333333333333,Where do we find comfort and peace?
+L2R (num_leaves 25),Bible Search Engine,0.26666666666666666,Who are the enemies of God?

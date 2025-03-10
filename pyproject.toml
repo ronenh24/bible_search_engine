@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bible_search_engine"
+version = "0.0.1"
+authors = [
+  { name="Ronen H", email="ronenhuang24@gmail.com" },
+]
+description = "Bible search engine incorporating natural language processing, deep learning, and machine learning."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Homepage = "https://github.com/ronenh24/bible_search_engine"
+Issues = "https://github.com/ronenh24/bible_search_engine/issues"
