@@ -4,13 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bible_search_engine"
-version = "0.0.1.1"
+version = "0.0.1.2"
 authors = [
   { name="Ronen H", email="ronenhuang24@gmail.com" },
 ]
 description = "Bible search engine incorporating natural language processing, deep learning, and machine learning."
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = [
+    "joblib",
+    "lightgbm",
+    "numpy",
+    "orjson",
+    "pandas",
+    "sentence_transformers",
+    "spacy",
+    "tqdm",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
