@@ -8,13 +8,13 @@ bible_search_engine = [
     "bible_data/*.jsonl",
     "bible_data/encoded_chapters.npy",
     "bible_index/statistics.json",
-    "bible_index/*.json;",
+    "bible_index/*.jsonl",
     "initial_ranker.pkl",
 ]
 
 [project]
 name = "bible_search_engine"
-version = "0.0.2.1"
+version = "0.0.2.2"
 authors = [
   { name="Ronen H", email="ronenhuang24@gmail.com" },
 ]
