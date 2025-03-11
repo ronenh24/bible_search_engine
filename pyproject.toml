@@ -4,8 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-data]
 bible_search_engine = [
-    "bible_data/*.*",
-    "bible_index/*.*"
+    "bible_data/chapterids.json",
+    "bible_data/*.jsonl",
+    "bible_data/encoded_chapters.npy",
+    "bible_index/statistics.json",
+    "bible_index/*.json;",
+    "initial_ranker.pkl",
 ]
 
 [project]
