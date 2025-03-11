@@ -2,9 +2,15 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.package-data]
+bible_search_engine = [
+    "bible_data/*.*",
+    "bible_index/*.*"
+]
+
 [project]
-name = "bible_search_engine"
-version = "0.0.1.2"
+name = "bible_search_engine_ronenh24"
+version = "0.0.2"
 authors = [
   { name="Ronen H", email="ronenhuang24@gmail.com" },
 ]

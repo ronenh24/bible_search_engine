@@ -6,6 +6,7 @@ import os
 from tqdm import tqdm
 import orjson
 from bible_search_engine.document_preprocessor import NLPTokenizer
+from importlib.resources.abc import Traversable
 
 
 class BibleChapterIndex:
@@ -48,11 +49,17 @@ class BibleChapterIndex:
                 self.statistics['unique_token_count'] += 1 # Update number of unique relevant tokens.
                 self.term_metadata[indexed_token] = {'number_of_chapters_appears': 0, 'total_term_frequency': 0}
             # Add Bible chapter to relevant token postings.
-            insort_left(self.index[indexed_token], (chapterid, token_counts[indexed_token]), key=lambda chapter_count: chapter_count[0])
-            self.term_metadata[indexed_token]['number_of_chapters_appears'] += 1 # Update number of Bible chapters relevant token appears.
-            self.term_metadata[indexed_token]['total_term_frequency'] += token_counts[indexed_token] # Update number of times relevant token appears.
-        self.statistics['mean_chapter_length'] = self.statistics['total_token_count'] / self.statistics['number_of_chapters'] # Update average Bible chapter length.
-        self.statistics['mean_verse_length'] = self.statistics['total_token_count'] / self.statistics['number_of_verses'] # Update average verse length.
+            insort_left(self.index[indexed_token], (chapterid, token_counts[indexed_token]),
+                        key=lambda chapter_count: chapter_count[0])
+            # Update number of Bible chapters relevant token appears.
+            self.term_metadata[indexed_token]['number_of_chapters_appears'] += 1
+            # Update number of times relevant token appears.
+            self.term_metadata[indexed_token]['total_term_frequency'] += token_counts[indexed_token]
+        # Update average Bible chapter length.
+        self.statistics['mean_chapter_length'] =\
+            self.statistics['total_token_count'] / self.statistics['number_of_chapters']
+        self.statistics['mean_verse_length'] =\
+            self.statistics['total_token_count'] / self.statistics['number_of_verses'] # Update average verse length.
     
     def remove_chapter(self, chapterid: int) -> None:
         '''
@@ -60,14 +67,19 @@ class BibleChapterIndex:
 
         chapterid: Bible chapter id.
         '''
-        self.statistics['total_token_count'] -= self.chapter_metadata[chapterid]['chapter_length'] # Update length of all Bible chapters.
+        # Update length of all Bible chapters.
+        self.statistics['total_token_count'] -= self.chapter_metadata[chapterid]['chapter_length']
         self.statistics['number_of_chapters'] -= 1 # Update number of Bible chapters.
-        self.statistics['number_of_verses'] -= self.chapter_metadata[chapterid]['number_of_verses'] # Update number of verses.
+        # Update number of verses.
+        self.statistics['number_of_verses'] -= self.chapter_metadata[chapterid]['number_of_verses']
         for token in self.chapter_vocab[chapterid]:
-            self.term_metadata[token]['number_of_chapters_appears'] -= 1 # Update number of Bible chapters relevant token appears.
+            # Update number of Bible chapters relevant token appears.
+            self.term_metadata[token]['number_of_chapters_appears'] -= 1
             # Remove Bible chapter from relevant token postings.
-            chapter_token_count = self.index[token].pop(bisect_left(self.index[token], chapterid, key=lambda chapter_count: chapter_count[0]))[1]
-            self.term_metadata[token]['total_term_frequency'] -= chapter_token_count # Update number of times relevant token appears.
+            chapter_token_count = self.index[token].pop(bisect_left(self.index[token], chapterid,
+                                                                    key=lambda chapter_count: chapter_count[0]))[1]
+            # Update number of times relevant token appears.
+            self.term_metadata[token]['total_term_frequency'] -= chapter_token_count
             if self.term_metadata[token]['number_of_chapters_appears'] == 0: # Relevant token no longer appears.
                 self.statistics['unique_token_count'] -= 1 # Update number of unique relevant tokens.
                 del self.index[token]
@@ -79,11 +91,13 @@ class BibleChapterIndex:
             self.statistics['mean_chapter_length'] = 0
             self.statistics['mean_verse_length'] = 0
         else:
-            self.statistics['mean_chapter_length'] = self.statistics['total_token_count'] / self.statistics['number_of_chapters']
+            self.statistics['mean_chapter_length'] =\
+                self.statistics['total_token_count'] / self.statistics['number_of_chapters']
         if self.statistics['number_of_verses'] == 0:
             self.statistics['mean_verse_length'] = 0
         else:
-            self.statistics['mean_verse_length'] = self.statistics['total_token_count'] / self.statistics['number_of_verses']
+            self.statistics['mean_verse_length'] =\
+                self.statistics['total_token_count'] / self.statistics['number_of_verses']
         
     def get_postings(self, term: str) -> list[tuple[int, int]]:
         '''
@@ -166,7 +180,8 @@ class BibleChapterIndex:
             return 0
         else:
             term_postings = self.index[term]
-            term_postings_chapter = term_postings[bisect_left(term_postings, chapterid, key=lambda chapter_count: chapter_count[0])]
+            term_postings_chapter = term_postings[bisect_left(term_postings, chapterid,
+                                                              key=lambda chapter_count: chapter_count[0])]
             if term_postings_chapter[0] != chapterid: # Term does not appear in Bible chapter.
                 return 0
             else:
@@ -241,7 +256,7 @@ class BibleChapterIndex:
             chapter_vocab_file.write(orjson.dumps({'chapterid': chapterid, 'chapter_vocab': list(vocab)}) + b'\n')
         chapter_vocab_file.close()
     
-    def load(self, bible_index_dir: str) -> None:
+    def load(self, bible_index_dir: str | Traversable) -> None:
         '''
         Loads the index.
 
@@ -259,50 +274,70 @@ class BibleChapterIndex:
         self._load_chapter_metadata(bible_index_dir)
         self._load_term_metadata(bible_index_dir)
         self._load_chapter_vocab(bible_index_dir)
-        print('Loaded Bible Index from ' + bible_index_dir)
+        print('Loaded Bible Index from ' + str(bible_index_dir))
 
-    def _load_index(self, bible_index_dir: str) -> None:
-        index_file_name = bible_index_dir + '/index.jsonl'
-        if not os.path.isfile(index_file_name):
-            raise Exception('Index file does not exist.')
-        with open(index_file_name, 'rb') as index_file:
-            for term_postings_line in tqdm(index_file):
-                term_postings = orjson.loads(term_postings_line)
-                self.index[term_postings['term']] = [tuple(chapter_freq) for chapter_freq in term_postings['postings']]
+    def _load_index(self, bible_index_dir: str | Traversable) -> None:
+        if isinstance(bible_index_dir, Traversable):
+            index_file = (bible_index_dir / "index.jsonl").open('rb')
+        else:
+            index_file_name = bible_index_dir + '/index.jsonl'
+            if not os.path.isfile(index_file_name):
+                raise Exception('Index file does not exist.')
+            index_file = open(index_file_name, 'rb')
+        for term_postings_line in tqdm(index_file):
+            term_postings = orjson.loads(term_postings_line)
+            self.index[term_postings['term']] = [tuple(chapter_freq) for chapter_freq in term_postings['postings']]
+        index_file.close()
     
-    def _load_stats(self, bible_index_dir: str):
-        stats_file_name = bible_index_dir + '/statistics.json'
-        if not os.path.isfile(stats_file_name):
-            raise Exception('Statistics file does not exist.')
-        with open(stats_file_name, 'rb') as stats_file:
-            self.statistics = orjson.loads(stats_file.readline())
+    def _load_stats(self, bible_index_dir: str | Traversable) -> None:
+        if isinstance(bible_index_dir, Traversable):
+            stats_file = (bible_index_dir / "statistics.json").open('rb')
+        else:
+            stats_file_name = bible_index_dir + '/statistics.json'
+            if not os.path.isfile(stats_file_name):
+                raise Exception('Statistics file does not exist.')
+            stats_file = open(stats_file_name, 'rb')
+        self.statistics = orjson.loads(stats_file.readline())
+        stats_file.close()
     
-    def _load_chapter_metadata(self, bible_index_dir: str) -> None:
-        chapter_metadata_file_name = bible_index_dir + '/chapter_metadata.jsonl'
-        if not os.path.isfile(chapter_metadata_file_name):
-            raise Exception('Chapter metadata file does not exist.')
-        with open(chapter_metadata_file_name, 'rb') as chapter_metadata_file:
-            for chapter_metadata_line in tqdm(chapter_metadata_file):
-                chapter_metadata = orjson.loads(chapter_metadata_line)
-                self.chapter_metadata[chapter_metadata['chapterid']] = chapter_metadata['chapter_metadata']
+    def _load_chapter_metadata(self, bible_index_dir: str | Traversable) -> None:
+        if isinstance(bible_index_dir, Traversable):
+            chapter_metadata_file = (bible_index_dir / "chapter_metadata.jsonl").open('rb')
+        else:
+            chapter_metadata_file_name = bible_index_dir + '/chapter_metadata.jsonl'
+            if not os.path.isfile(chapter_metadata_file_name):
+                raise Exception('Chapter metadata file does not exist.')
+            chapter_metadata_file = open(chapter_metadata_file_name, 'rb')
+        for chapter_metadata_line in tqdm(chapter_metadata_file):
+            chapter_metadata = orjson.loads(chapter_metadata_line)
+            self.chapter_metadata[chapter_metadata['chapterid']] = chapter_metadata['chapter_metadata']
+        chapter_metadata_file.close()
     
-    def _load_term_metadata(self, bible_index_dir: str) -> None:
-        term_metadata_file_name = bible_index_dir + '/term_metadata.jsonl'
-        if not os.path.isfile(term_metadata_file_name):
-            raise Exception('Term metadata file does not exist.')
-        with open(term_metadata_file_name, 'rb') as term_metadata_file:
-            for term_metadata_line in tqdm(term_metadata_file):
-                term_metadata = orjson.loads(term_metadata_line)
-                self.term_metadata[term_metadata['term']] = term_metadata['term_metadata']
+    def _load_term_metadata(self, bible_index_dir: str | Traversable) -> None:
+        if isinstance(bible_index_dir, Traversable):
+            term_metadata_file = (bible_index_dir / "term_metadata.jsonl").open('rb')
+        else:
+            term_metadata_file_name = bible_index_dir + '/term_metadata.jsonl'
+            if not os.path.isfile(term_metadata_file_name):
+                raise Exception('Term metadata file does not exist.')
+            term_metadata_file = open(term_metadata_file_name, 'rb')
+        for term_metadata_line in tqdm(term_metadata_file):
+            term_metadata = orjson.loads(term_metadata_line)
+            self.term_metadata[term_metadata['term']] = term_metadata['term_metadata']
+        term_metadata_file.close()
     
-    def _load_chapter_vocab(self, bible_index_dir: str) -> None:
-        chapter_vocab_file_name = bible_index_dir + '/chapter_vocab.jsonl'
-        if not os.path.isfile(chapter_vocab_file_name):
-            raise Exception('Chapter vocabulary file does not exist.')
-        with open(chapter_vocab_file_name, 'rb') as chapter_vocab_file:
-            for chapter_vocab_line in tqdm(chapter_vocab_file):
-                chapter_vocab = orjson.loads(chapter_vocab_line)
-                self.chapter_vocab[chapter_vocab['chapterid']] = set(chapter_vocab['chapter_vocab'])
+    def _load_chapter_vocab(self, bible_index_dir: str | Traversable) -> None:
+        if isinstance(bible_index_dir, Traversable):
+            chapter_vocab_file = (bible_index_dir / "chapter_vocab.jsonl").open('rb')
+        else:
+            chapter_vocab_file_name = bible_index_dir + '/chapter_vocab.jsonl'
+            if not os.path.isfile(chapter_vocab_file_name):
+                raise Exception('Chapter vocabulary file does not exist.')
+            chapter_vocab_file = open(chapter_vocab_file_name, 'rb')
+        for chapter_vocab_line in tqdm(chapter_vocab_file):
+            chapter_vocab = orjson.loads(chapter_vocab_line)
+            self.chapter_vocab[chapter_vocab['chapterid']] = set(chapter_vocab['chapter_vocab'])
+        chapter_vocab_file.close()
 
 
 def create_bible_index(old_testament_path: str | None, new_testament_path: str | None, nlp_tokenizer: NLPTokenizer,
@@ -330,7 +365,8 @@ def create_bible_index(old_testament_path: str | None, new_testament_path: str |
                 if bible_chapter_expansion and bible_chapter_id in bible_chapter_expansion:
                     for bible_chapter_query in bible_chapter_expansion[bible_chapter_id]:
                         bible_chapter_text += ' ' + bible_chapter_query
-                bible_chapter_index.add_chapter(bible_chapter_id, bible_chapter['num_verses'], nlp_tokenizer.tokenize(bible_chapter_text))
+                bible_chapter_index.add_chapter(bible_chapter_id, bible_chapter['num_verses'],
+                                                nlp_tokenizer.tokenize(bible_chapter_text))
 
     if new_testament_path: # Index New Testament Bible chapters.
         if not os.path.isfile(new_testament_path):
@@ -343,7 +379,8 @@ def create_bible_index(old_testament_path: str | None, new_testament_path: str |
                 if bible_chapter_expansion and bible_chapter_id in bible_chapter_expansion:
                     for bible_chapter_query in bible_chapter_expansion[bible_chapter_id]:
                         bible_chapter_text += ' ' + bible_chapter_query
-                bible_chapter_index.add_chapter(bible_chapter_id, bible_chapter['num_verses'], nlp_tokenizer.tokenize(bible_chapter_text))
+                bible_chapter_index.add_chapter(bible_chapter_id, bible_chapter['num_verses'],
+                                                nlp_tokenizer.tokenize(bible_chapter_text))
 
     return bible_chapter_index
 

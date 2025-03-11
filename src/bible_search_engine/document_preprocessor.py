@@ -38,7 +38,8 @@ class NLPTokenizer:
             tokenized_chapter_text = [None if token.is_stop else token for token in tokenized_chapter_text]
         
         if not self.punctuation: # No punctuation included.
-            tokenized_chapter_text = [None if token is None or token.is_punct else token for token in tokenized_chapter_text]
+            tokenized_chapter_text = [None if token is None or token.is_punct else token
+                                      for token in tokenized_chapter_text]
         
         tokens = []
 

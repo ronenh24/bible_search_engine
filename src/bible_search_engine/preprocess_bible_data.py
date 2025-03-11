@@ -8,6 +8,7 @@ import json
 import os
 import string
 
+
 def get_bible_data(kjv_text_file_dir: str):
     '''
     Produces the jsonl data file of the King James Bible
@@ -23,7 +24,7 @@ def get_bible_data(kjv_text_file_dir: str):
                      'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel',
                      'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk',
                      'Zephaniah', 'Haggai', 'Zechariah', 'Malachi']
-    
+
     # New testament books
     new_testament = ['Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
                      'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
@@ -51,7 +52,8 @@ def get_bible_data(kjv_text_file_dir: str):
                 chapter_num = 1
                 is_chapter = True
                 while is_chapter:
-                    chapter_dict = {'chapterid': chapterid, 'chapter': book + ' ' + str(chapter_num), 'num_verses': 0, 'verses': {}}
+                    chapter_dict = {'chapterid': chapterid, 'chapter': book + ' ' + str(chapter_num), 'num_verses': 0,
+                                    'verses': {}}
                     verse_num = 1
                     verse = book_data.readline().strip()
                     if book == 'Psalms' and verse.split()[0] != str(verse_num):
@@ -61,7 +63,8 @@ def get_bible_data(kjv_text_file_dir: str):
                         chapter_dict['num_verses'] += 1
                         verse_num += 1
                         verse = book_data.readline().strip()
-                        if book == 'Psalms' and chapter_num == 119 and verse != "" and verse.split()[0] != str(verse_num):
+                        if book == 'Psalms' and chapter_num == 119 and verse != "" and verse.split()[0] != str(
+                                verse_num):
                             verse = book_data.readline().strip()
                     if verse != "":
                         is_chapter = False
@@ -70,7 +73,7 @@ def get_bible_data(kjv_text_file_dir: str):
                     old_testament_data.write(json.dumps(chapter_dict) + "\n")
                     chapter_num += 1
                     chapterid += 1
-    
+
     # Produce new testament data.
     with open('bible_data/new_testament.jsonl', 'x', encoding='utf-8') as new_testament_data:
         for book in new_testament:
@@ -83,7 +86,8 @@ def get_bible_data(kjv_text_file_dir: str):
                 chapter_num = 1
                 is_chapter = True
                 while is_chapter:
-                    chapter_dict = {'chapterid': chapterid, 'chapter': book + ' ' + str(chapter_num), 'num_verses': 0, 'verses': {}}
+                    chapter_dict = {'chapterid': chapterid, 'chapter': book + ' ' + str(chapter_num), 'num_verses': 0,
+                                    'verses': {}}
                     verse_num = 1
                     verse = book_data.readline().strip()
                     while verse != "" and verse.split()[0] == str(verse_num):
@@ -99,7 +103,5 @@ def get_bible_data(kjv_text_file_dir: str):
                     chapter_num += 1
                     chapterid += 1
 
-
-# __name__ == "__main__":
-    #get_bible_data('kjv-text-files')
-
+# if __name__ == "__main__":
+    # get_bible_data('kjv-text-files')

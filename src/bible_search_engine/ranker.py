@@ -172,7 +172,8 @@ class BM25Ranker(TraditionalRanker):
                 c_t_d = chapter_term_counts[query_part]
                 df_t = self.bible_chapter_index.get_term_metadata(query_part)['number_of_chapters_appears']
                 idf = np.log((number_of_chapters - df_t + 0.5) / (df_t + 0.5))
-                tf = ((self.k1 + 1) * c_t_d) / (self.k1 * (1 - self.b + self.b * (chapter_length / mean_chapter_length)) + c_t_d)
+                tf = ((self.k1 + 1) * c_t_d) /\
+                     (self.k1 * (1 - self.b + self.b * (chapter_length / mean_chapter_length)) + c_t_d)
                 qtf = ((self.k3 + 1) * c_t_q) / (self.k3 + c_t_q)
                 score += idf * tf * qtf
 
@@ -225,7 +226,8 @@ class DirichletLMRanker(TraditionalRanker):
         for query_part, c_t_q in query_parts_counts.items():
             if query_part in chapter_term_counts:
                 c_t_d = chapter_term_counts[query_part]
-                p_w_c = self.bible_chapter_index.get_term_metadata(query_part)['total_term_frequency'] / total_token_count
+                p_w_c = self.bible_chapter_index.get_term_metadata(query_part)['total_term_frequency'] /\
+                        total_token_count
                 ml_estimate = c_t_q * np.log(1 + (c_t_d / (self.mu * p_w_c)))
                 score += ml_estimate
         

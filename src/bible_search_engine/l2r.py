@@ -56,8 +56,10 @@ class L2RRanker:
             for chapterid, relevance_score in train_query_df.itertuples(index=False, name=None):
                 chapter_term_counts = {}
                 for query_part in set_query_parts.intersection(self.bible_chapter_index.get_chapter_vocab(chapterid)):
-                    chapter_term_counts[query_part] = self.bible_chapter_index.get_chapter_term_freq(chapterid, query_part)
-                train_features.append(self.feature_extractor.get_features(chapterid, chapter_term_counts, query_parts, query))
+                    chapter_term_counts[query_part] = self.bible_chapter_index.get_chapter_term_freq(chapterid,
+                                                                                                     query_part)
+                train_features.append(self.feature_extractor.get_features(chapterid, chapter_term_counts,
+                                                                          query_parts, query))
                 train_relevance_scores.append(relevance_score)
         
         self.lightgbm_ranker.fit(train_features, train_relevance_scores, group=train_num_query_examples)
@@ -84,7 +86,8 @@ class L2RRanker:
             chapter_term_counts = {}
             for query_part in set_query_parts.intersection(self.bible_chapter_index.get_chapter_vocab(chapterid)):
                 chapter_term_counts[query_part] = self.bible_chapter_index.get_chapter_term_freq(chapterid, query_part)
-            test_features.append(self.feature_extractor.get_features(chapterid, chapter_term_counts, query_parts, query))
+            test_features.append(self.feature_extractor.get_features(chapterid, chapter_term_counts,
+                                                                     query_parts, query))
         
         results = [top_100_initial_results[i] for i in np.argsort(self.lightgbm_ranker.predict(test_features))[::-1]]
         results.extend(initial_results[100:])

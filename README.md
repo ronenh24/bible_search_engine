@@ -20,7 +20,7 @@ The Bible search engine can be created with the `create_bible_search_engine` fun
 For example,
 ```
 from bible_search_engine.pipeline import create_bible_search_engine
-bible_search_engine = create_bible_search_engine("src/bible_search_engine/initial_ranker.pkl")
+bible_search_engine = create_bible_search_engine()
 ```
 .
 

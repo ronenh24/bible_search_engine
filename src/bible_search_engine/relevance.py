@@ -38,7 +38,8 @@ class Relevance:
 
         for query in relevance_df['query'].unique():
             print(query)
-            rel_chapters = relevance_df[relevance_df['query'] == query][['chapterid', 'relevance']].sort_values('relevance', ascending=False)
+            rel_chapters = relevance_df[relevance_df['query'] == query][['chapterid', 'relevance']].\
+                sort_values('relevance', ascending=False)
             all_ret_chapters = ranker.query(query)
             ret_chapter_precision_labels = []
 
