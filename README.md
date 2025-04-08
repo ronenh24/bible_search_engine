@@ -174,7 +174,7 @@ yields
 - Use Online Learning
 
 ## References
-Bible Study Tools. (2025). Retrieved from [https://www.biblestudytools.com/](https://www.biblestudytools.com)  
+Bible Study Tools. (2025). Retrieved from [https://www.biblestudytools.com](https://www.biblestudytools.com)  
 
 Honnibal, M., Montani, I., Van Landeghem, S., & Boyd, A. (2020). spaCy: Industrial-strength Natural Language Processing in Python. doi:10.5281/zenodo.1212303
 
