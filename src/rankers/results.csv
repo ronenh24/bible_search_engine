@@ -1,0 +1,61 @@
+Ranker,Ranker Type,Precision at 15,Query
+Random,Baseline,0.06666666666666667,What did God do to unloyal servants?
+Random,Baseline,0.06666666666666667,Why should we listen to authority and what are the exceptions?
+Random,Baseline,0.06666666666666667,How do we get saved and know when we are saved?
+Random,Baseline,0.06666666666666667,Where did Paul travel to spread the good news?
+Random,Baseline,0.0,Who does God want us to reach out to?
+Random,Baseline,0.6,What does God say about spirituality?
+Random,Baseline,0.06666666666666667,Why did Judas betray Jesus?
+Random,Baseline,0.3333333333333333,How do we face discrimination and injustice?
+Random,Baseline,0.2,Where do we find comfort and peace?
+Random,Baseline,0.2,Who has received prophecies from God?
+TF-IDF,Baseline,0.4666666666666667,What did God do to unloyal servants?
+TF-IDF,Baseline,0.8,Why should we listen to authority and what are the exceptions?
+TF-IDF,Baseline,0.6,How do we get saved and know when we are saved?
+TF-IDF,Baseline,0.7333333333333333,Where did Paul travel to spread the good news?
+TF-IDF,Baseline,0.2,Who does God want us to reach out to?
+TF-IDF,Baseline,0.5333333333333333,What does God say about spirituality?
+TF-IDF,Baseline,0.8,Why did Judas betray Jesus?
+TF-IDF,Baseline,0.8,How do we face discrimination and injustice?
+TF-IDF,Baseline,0.7333333333333333,Where do we find comfort and peace?
+TF-IDF,Baseline,0.8,Who has received prophecies from God?
+BM25,Baseline,0.0,What did God do to unloyal servants?
+BM25,Baseline,0.0,Why should we listen to authority and what are the exceptions?
+BM25,Baseline,0.0,How do we get saved and know when we are saved?
+BM25,Baseline,0.06666666666666667,Where did Paul travel to spread the good news?
+BM25,Baseline,0.06666666666666667,Who does God want us to reach out to?
+BM25,Baseline,0.6666666666666666,What does God say about spirituality?
+BM25,Baseline,0.6,Why did Judas betray Jesus?
+BM25,Baseline,0.3333333333333333,How do we face discrimination and injustice?
+BM25,Baseline,0.2,Where do we find comfort and peace?
+BM25,Baseline,0.5333333333333333,Who has received prophecies from God?
+Dirichlet LM,Baseline,0.0,What did God do to unloyal servants?
+Dirichlet LM,Baseline,0.0,Why should we listen to authority and what are the exceptions?
+Dirichlet LM,Baseline,0.0,How do we get saved and know when we are saved?
+Dirichlet LM,Baseline,0.06666666666666667,Where did Paul travel to spread the good news?
+Dirichlet LM,Baseline,0.06666666666666667,Who does God want us to reach out to?
+Dirichlet LM,Baseline,0.6666666666666666,What does God say about spirituality?
+Dirichlet LM,Baseline,0.6,Why did Judas betray Jesus?
+Dirichlet LM,Baseline,0.3333333333333333,How do we face discrimination and injustice?
+Dirichlet LM,Baseline,0.2,Where do we find comfort and peace?
+Dirichlet LM,Baseline,0.5333333333333333,Who has received prophecies from God?
+Bi-Encoder,Baseline,0.26666666666666666,What did God do to unloyal servants?
+Bi-Encoder,Baseline,0.5333333333333333,Why should we listen to authority and what are the exceptions?
+Bi-Encoder,Baseline,0.5333333333333333,How do we get saved and know when we are saved?
+Bi-Encoder,Baseline,0.5333333333333333,Where did Paul travel to spread the good news?
+Bi-Encoder,Baseline,0.4,Who does God want us to reach out to?
+Bi-Encoder,Baseline,0.6,What does God say about spirituality?
+Bi-Encoder,Baseline,0.8,Why did Judas betray Jesus?
+Bi-Encoder,Baseline,0.5333333333333333,How do we face discrimination and injustice?
+Bi-Encoder,Baseline,0.6,Where do we find comfort and peace?
+Bi-Encoder,Baseline,0.8666666666666667,Who has received prophecies from God?
+L2R,Bible Search Engine,0.6666666666666666,What did God do to unloyal servants?
+L2R,Bible Search Engine,0.5333333333333333,Why should we listen to authority and what are the exceptions?
+L2R,Bible Search Engine,0.6,How do we get saved and know when we are saved?
+L2R,Bible Search Engine,0.7333333333333333,Where did Paul travel to spread the good news?
+L2R,Bible Search Engine,0.4,Who does God want us to reach out to?
+L2R,Bible Search Engine,0.8666666666666667,What does God say about spirituality?
+L2R,Bible Search Engine,0.5333333333333333,Why did Judas betray Jesus?
+L2R,Bible Search Engine,0.8666666666666667,How do we face discrimination and injustice?
+L2R,Bible Search Engine,0.8,Where do we find comfort and peace?
+L2R,Bible Search Engine,0.7333333333333333,Who has received prophecies from God?

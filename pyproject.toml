@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+bible_search_engine = [
+    "bible_data/*.*",
+    "bible_index_*/*.*",
+    "initial_ranker_*.pkl",
+]
+
+[project]
+name = "bible-search-engine"
+version = "0.1.0"
+authors = [
+  { name="Ronen Huang", email="ronenhuang24@gmail.com" },
+]
+description = "Bible search engine incorporating natural language processing, deep learning, and machine learning."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "torchvision",
+    "transformers",
+    "datasets",
+    "sentence-transformers",
+    "spacy",
+    "beautifulsoup4",
+    "lightgbm",
+    "optuna",
+    "fastembed",
+    "qdrant-client",
+    "orjson",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Homepage = "https://github.com/ronenh24/bible_search_engine"
+Issues = "https://github.com/ronenh24/bible_search_engine/issues"
