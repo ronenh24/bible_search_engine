@@ -90,7 +90,7 @@ class BibleSearchEngine:
                     open(new_testament_path, 'rb'),
                     True
                 )
-                _, _ = self.get_colbert(chapter_ids, chapter_texts)
+                self.get_colbert(chapter_ids, chapter_texts)
             colbert_ranker = ColbertRanker(
                 "colbert-ir/colbertv2.0", "bible_chapters"
             )
@@ -139,6 +139,9 @@ class BibleSearchEngine:
             initial_ranker_path =\
                 "bible_search_engine/initial_ranker_" +\
                 version + ".pkl"
+            traditional_hyperparams_path =\
+                "bible_search_engine/initial_params_" +\
+                version + ".json"
             self.l2r_ranker = L2RRanker(
                 bible_chapter_index, nlp_tokenizer,
                 bi_encoder_ranker, l2r_feature_extractor
@@ -147,6 +150,17 @@ class BibleSearchEngine:
             joblib.dump(
                 self.l2r_ranker.lightgbm_ranker, initial_ranker_path, True
             )
+            trained_bm25_ranker = self.l2r_ranker.feature_extractor.bm25_ranker
+            b, k1, k3 = trained_bm25_ranker.get_params()
+            trained_dirichlet_lm_ranker =\
+                self.l2r_ranker.feature_extractor.dirichlet_lm_ranker
+            mu = trained_dirichlet_lm_ranker.get_params()
+            with open(traditional_hyperparams_path, 'xb') as hp_file:
+                hp_file.write(
+                    orjson.dumps(
+                        {"b": b, "k1": k1, "k3": k3, "mu": mu}
+                    )
+                )
 
             # Bible chapter titles and verses.
             self.get_chapter_verses(
@@ -165,11 +179,19 @@ class BibleSearchEngine:
             bible_chapter_index.load(bible_chapter_index_path)
 
             # Traditional rankers.
+            traditional_hyperparams_file =\
+                "initial_params_" + version + ".json"
+            traditional_hyperparams_path =\
+                files("bible_search_engine" / traditional_hyperparams_file)
+            with traditional_hyperparams_path.open("rb") as hp_file:
+                hp_dict = orjson.loads(hp_file.readline())
             tf_idf_ranker = TFIDFRanker(bible_chapter_index, nlp_tokenizer)
             bm25_ranker = BM25Ranker(bible_chapter_index, nlp_tokenizer)
+            bm25_ranker.set_params(hp_dict["b"], hp_dict["k1"], hp_dict["k3"])
             dirichlet_lm_ranker = DirichletLMRanker(
                 bible_chapter_index, nlp_tokenizer
             )
+            dirichlet_lm_ranker.set_params(hp_dict["mu"])
 
             # Cross-encoder ranker.
             old_testament_file = 'old_testament_' + version + '.jsonl'
@@ -272,7 +294,6 @@ class BibleSearchEngine:
                             )
                         ]
             )
-        return colbert_model, colbert_client
 
     def get_chapter_encodings(self, old_testament_file, new_testament_file,
                               complete: bool) -> tuple[list[int], list[str]]:

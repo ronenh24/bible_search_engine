@@ -49,6 +49,97 @@ class L2RRanker:
 
         train_queries_df = pd.read_csv(train_queries_data)
 
+        test_eval = Relevance(test_queries_data)
+
+        params_study = optuna.create_study(
+            study_name="Bible Search Engine Ranker Parameter Optimization",
+            direction="maximize"
+        )
+        params_study.optimize(
+            lambda trial: self.determine_params(
+                trial, train_queries_df, test_eval
+            ), 10
+        )
+        best_params = params_study.best_params
+
+        lgbmranker_params = {
+            'num_leaves': best_params["num_leaves"],
+            'learning_rate': best_params["learning_rate"],
+            'max_depth': best_params["max_depth"],
+            'num_iterations': best_params["num_iterations"],
+            'min_data_in_leaf': best_params["min_data_in_leaf"],
+            'metric': 'ndcg', 'importance_type': 'gain', 'verbosity': 2,
+            'n_jobs': multiprocessing.cpu_count()}
+        self.lightgbm_ranker =\
+            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
+        self.feature_extractor.bm25_ranker.set_params(
+            best_params["b"], best_params["k1"], best_params["k3"]
+        )
+        self.feature_extractor.dirichlet_lm_ranker.set_params(
+            best_params["mu"]
+        )
+
+        train_features, train_relevance_scores, train_num_query_examples =\
+            self.get_train(train_queries_df)
+
+        self.lightgbm_ranker.fit(
+            train_features, train_relevance_scores,
+            group=train_num_query_examples
+        )
+
+    def determine_params(self, trial: optuna.Trial,
+                         train_queries_df: pd.DataFrame,
+                         test_eval: Relevance) -> float:
+        """
+        Returns test precision for hyperparameters.
+        """
+        learning_rate = trial.suggest_float(
+            "learning_rate", 5e-6, 5e-4, log=True
+        )
+        num_iterations = trial.suggest_int(
+            "num_iterations", 1000, 2000, log=True
+        )
+        max_depth = trial.suggest_int("max_depth", 7, 14)
+        num_leaves = trial.suggest_int(
+            "num_leaves", 2 ** (max_depth - 1), 2 ** max_depth
+        )
+        min_data_in_leaf = trial.suggest_int("min_data_in_leaf", 5, 35)
+        b = trial.suggest_float("b", 0.3, 0.9)
+        k1 = trial.suggest_float("k1", 0.8, 2.2)
+        k3 = trial.suggest_float("k3", 0, 15)
+        mu = trial.suggest_int("mu", 1000, 5000)
+
+        self.feature_extractor.bm25_ranker.set_params(b, k1, k3)
+        self.feature_extractor.dirichlet_lm_ranker.set_params(mu)
+
+        train_features, train_relevance_scores, train_num_query_examples =\
+            self.get_train(train_queries_df)
+
+        lgbmranker_params = {
+            'num_leaves': num_leaves, 'learning_rate': learning_rate,
+            'max_depth': max_depth, 'num_iterations': num_iterations,
+            'min_data_in_leaf': min_data_in_leaf, 'metric': 'ndcg',
+            'importance_type': 'gain', 'verbosity': 2,
+            'n_jobs': multiprocessing.cpu_count()
+        }
+        self.lightgbm_ranker =\
+            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
+        self.lightgbm_ranker.fit(
+            train_features, train_relevance_scores,
+            group=train_num_query_examples
+        )
+
+        results = [s for _, s in test_eval.evaluate_ranker_results(self)]
+        return st.t.interval(
+            0.95, len(results) - 1, np.mean(results),
+            st.sem(results)
+        )[0]
+
+    def get_train(self, train_queries_df: pd.DataFrame) ->\
+            tuple[list[list[float]], list[int], list[int]]:
+        """
+        Prepares train data for L2R.
+        """
         train_features = []
         train_relevance_scores = []
         train_num_query_examples = []
@@ -83,73 +174,7 @@ class L2RRanker:
                 )
                 train_relevance_scores.append(relevance_score)
 
-        test_eval = Relevance(test_queries_data)
-
-        params_study = optuna.create_study(
-            study_name="Bible Search Engine Ranker Parameter Optimization",
-            direction="maximize"
-        )
-        params_study.optimize(
-            lambda trial: self.determine_params(
-                trial, train_features, train_relevance_scores,
-                train_num_query_examples, test_eval
-            ), 10
-        )
-        best_params = params_study.best_params
-        lgbmranker_params = {
-            'num_leaves': best_params["num_leaves"],
-            'learning_rate': best_params["learning_rate"],
-            'max_depth': best_params["max_depth"],
-            'num_iterations': best_params["num_iterations"],
-            'min_data_in_leaf': best_params["min_data_in_leaf"],
-            'metric': 'ndcg', 'importance_type': 'gain', 'verbosity': 2,
-            'n_jobs': multiprocessing.cpu_count()}
-        self.lightgbm_ranker =\
-            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
-        self.lightgbm_ranker.fit(
-            train_features, train_relevance_scores,
-            group=train_num_query_examples
-        )
-
-    def determine_params(self, trial: optuna.Trial,
-                         train_features: list[list[float]],
-                         train_relevance_scores: list[float],
-                         train_num_query_examples: list[int],
-                         test_eval: Relevance) -> float:
-        """
-        Returns test precision for hyperparameters.
-        """
-        learning_rate = trial.suggest_float(
-            "learning_rate", 5e-6, 5e-4, log=True
-        )
-        num_iterations = trial.suggest_int(
-            "num_iterations", 1000, 2000, log=True
-        )
-        max_depth = trial.suggest_int("max_depth", 7, 14)
-        num_leaves = trial.suggest_int(
-            "num_leaves", 2 ** (max_depth - 1), 2 ** max_depth
-        )
-        min_data_in_leaf = trial.suggest_int("min_data_in_leaf", 5, 35)
-
-        lgbmranker_params = {
-            'num_leaves': num_leaves, 'learning_rate': learning_rate,
-            'max_depth': max_depth, 'num_iterations': num_iterations,
-            'min_data_in_leaf': min_data_in_leaf, 'metric': 'ndcg',
-            'importance_type': 'gain', 'verbosity': 2,
-            'n_jobs': multiprocessing.cpu_count()
-        }
-        self.lightgbm_ranker =\
-            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
-        self.lightgbm_ranker.fit(
-            train_features, train_relevance_scores,
-            group=train_num_query_examples
-        )
-
-        results = [s for _, s in test_eval.evaluate_ranker_results(self)]
-        return st.t.interval(
-            0.95, len(results) - 1, np.mean(results),
-            st.sem(results)
-        )[0]
+        return train_features, train_relevance_scores, train_num_query_examples
 
     def query(self, query: str) -> list[tuple[int, float]]:
         '''

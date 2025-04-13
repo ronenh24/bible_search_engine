@@ -185,6 +185,24 @@ class BM25Ranker(TraditionalRanker):
         self.k1 = k1
         self.k3 = k3
 
+    def set_params(self, b: float = None, k1: float = None,
+                   k3: float = None) -> None:
+        """
+        Set parameters of BM25.
+        """
+        if b and isinstance(b, float):
+            self.b = b
+        if k1 and isinstance(k1, float):
+            self.k1 = k1
+        if k3 and isinstance(k3, float):
+            self.k3 = k3
+    
+    def get_params(self) -> tuple[float, float, float]:
+        """
+        Get hyperparameters.
+        """
+        return (self.b, self.k1, self.k3)
+
     def query(self, query: str) -> list[tuple[int, int]]:
         results = []
 
@@ -249,7 +267,7 @@ class BM25Ranker(TraditionalRanker):
                 tf_den = 1 - self.b
                 tf_den += self.b * (chapter_length / mean_chapter_length)
                 tf_den *= self.k1
-                tf_den + c_t_d
+                tf_den += c_t_d
                 tf = tf_num / tf_den
                 qtf = ((self.k3 + 1) * c_t_q) / (self.k3 + c_t_q)
                 score += idf * tf * qtf
@@ -268,6 +286,19 @@ class DirichletLMRanker(TraditionalRanker):
                  nlp_tokenizer: NLPTokenizer, mu: float = 2000) -> None:
         super().__init__(bible_chapter_index, nlp_tokenizer)
         self.mu = mu
+
+    def set_params(self, mu: int = None) -> None:
+        """
+        Set parameters of Dirichlet.
+        """
+        if mu and isinstance(mu, int):
+            self.mu = mu
+
+    def get_params(self) -> int:
+        """
+        Get hyperparameters.
+        """
+        return self.mu
 
     def query(self, query: str) -> list[tuple[int, int]]:
         results = []
