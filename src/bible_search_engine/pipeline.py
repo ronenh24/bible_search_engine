@@ -155,7 +155,7 @@ class BibleSearchEngine:
             trained_dirichlet_lm_ranker =\
                 self.l2r_ranker.feature_extractor.dirichlet_lm_ranker
             mu = trained_dirichlet_lm_ranker.get_params()
-            with open(traditional_hyperparams_path, 'xb') as hp_file:
+            with open(traditional_hyperparams_path, 'wb') as hp_file:
                 hp_file.write(
                     orjson.dumps(
                         {"b": b, "k1": k1, "k3": k3, "mu": mu}

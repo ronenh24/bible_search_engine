@@ -40,16 +40,11 @@ def get_bible_data(version: Literal["csv", "esv", "kjv", "msg", "nas", "niv",
     new_testament_path = 'bible_search_engine/bible_data/new_testament_' +\
         version + '.jsonl'
 
-    if os.path.isdir('bible_search_engine/bible_data'):
-        if os.path.isfile(old_testament_path):
-            os.remove(old_testament_path)
-        if os.path.isfile(new_testament_path):
-            os.remove(new_testament_path)
-    else:
+    if not os.path.isdir('bible_search_engine/bible_data'):
         os.mkdir('bible_search_engine/bible_data')
     if not os.path.isfile('bible_search_engine/bible_data/__init__.py'):
         init_file = open(
-            'bible_search_engine/bible_data/__init__.py', 'x',
+            'bible_search_engine/bible_data/__init__.py', 'w',
             encoding='utf-8'
         )
         init_file.close()
@@ -59,7 +54,7 @@ def get_bible_data(version: Literal["csv", "esv", "kjv", "msg", "nas", "niv",
         web_link += "/" + version
 
     chapter_id = 1
-    with open(old_testament_path, 'x', encoding='utf-8') as old_testament_data:
+    with open(old_testament_path, 'w', encoding='utf-8') as old_testament_data:
         for book in tqdm(old_testament):
             book_url = web_link + "/" + book.lower().replace(" ", "-")
             book_session = requests.session()
@@ -105,7 +100,7 @@ def get_bible_data(version: Literal["csv", "esv", "kjv", "msg", "nas", "niv",
                     chapter_num += 1
                     chapter_id += 1
 
-    with open(new_testament_path, 'x', encoding='utf-8') as new_testament_data:
+    with open(new_testament_path, 'w', encoding='utf-8') as new_testament_data:
         for book in tqdm(new_testament):
             book_url = web_link + "/" + book.lower().replace(" ", "-")
             book_session = requests.session()

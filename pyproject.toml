@@ -12,7 +12,7 @@ bible_search_engine = [
 
 [project]
 name = "bible-search-engine"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Ronen Huang", email="ronenhuang24@gmail.com" },
 ]

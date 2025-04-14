@@ -271,81 +271,61 @@ class BibleChapterIndex:
 
     def _save_index(self, bible_index_dir: str) -> None:
         index_file_name = bible_index_dir + '/index.jsonl'
-        if os.path.isfile(index_file_name):
-            index_file = open(index_file_name, 'wb')
-        else:
-            index_file = open(index_file_name, 'xb')
-        for term, postings in tqdm(self.index.items()):
-            index_file.write(
-                orjson.dumps(
-                    {
-                        'term': term,
-                        'postings': postings
-                    }
-                ) + b'\n'
-            )
-        index_file.close()
+        with open(index_file_name, "wb") as index_file:
+            for term, postings in tqdm(self.index.items()):
+                index_file.write(
+                    orjson.dumps(
+                        {
+                            'term': term,
+                            'postings': postings
+                        }
+                    ) + b'\n'
+                )
 
     def _save_stats(self, bible_index_dir: str) -> None:
         stats_file_name = bible_index_dir + '/statistics.json'
-        if os.path.isfile(stats_file_name):
-            stats_file = open(stats_file_name, 'wb')
-        else:
-            stats_file = open(stats_file_name, 'xb')
-        stats_file.write(orjson.dumps(self.statistics))
-        stats_file.close()
+        with open(stats_file_name, 'wb') as stats_file:
+            stats_file.write(orjson.dumps(self.statistics))
 
     def _save_chapter_metadata(self, bible_index_dir: str) -> None:
         chapter_metadata_file_name =\
             bible_index_dir + '/chapter_metadata.jsonl'
-        if os.path.isfile(chapter_metadata_file_name):
-            chapter_metadata_file = open(chapter_metadata_file_name, 'wb')
-        else:
-            chapter_metadata_file = open(chapter_metadata_file_name, 'xb')
-        for chapterid, metadata in tqdm(self.chapter_metadata.items()):
-            chapter_metadata_file.write(
-                orjson.dumps(
-                    {
-                        'chapterid': chapterid,
-                        'chapter_metadata': metadata
-                    }
-                ) + b'\n'
-            )
-        chapter_metadata_file.close()
+        with open(chapter_metadata_file_name, 'wb') as chapter_metadata_file:
+            for chapterid, metadata in tqdm(self.chapter_metadata.items()):
+                chapter_metadata_file.write(
+                    orjson.dumps(
+                        {
+                            'chapterid': chapterid,
+                            'chapter_metadata': metadata
+                        }
+                    ) + b'\n'
+                )
 
     def _save_term_metadata(self, bible_index_dir: str) -> None:
         term_metadata_file_name = bible_index_dir + '/term_metadata.jsonl'
-        if os.path.isfile(term_metadata_file_name):
-            term_metadata_file = open(term_metadata_file_name, 'wb')
-        else:
-            term_metadata_file = open(term_metadata_file_name, 'xb')
-        for term, metadata in tqdm(self.term_metadata.items()):
-            term_metadata_file.write(
-                orjson.dumps(
-                    {
-                        'term': term,
-                        'term_metadata': metadata
-                    }
-                ) + b'\n'
-            )
-        term_metadata_file.close()
+        with open(term_metadata_file_name, 'wb') as term_metadata_file:
+            for term, metadata in tqdm(self.term_metadata.items()):
+                term_metadata_file.write(
+                    orjson.dumps(
+                        {
+                            'term': term,
+                            'term_metadata': metadata
+                        }
+                    ) + b'\n'
+                )
 
     def _save_chapter_vocab(self, bible_index_dir: str) -> None:
         chapter_vocab_file_name = bible_index_dir + '/chapter_vocab.jsonl'
-        if os.path.isfile(chapter_vocab_file_name):
-            chapter_vocab_file = open(chapter_vocab_file_name, 'wb')
-        else:
-            chapter_vocab_file = open(chapter_vocab_file_name, 'xb')
-        for chapterid, vocab in tqdm(self.chapter_vocab.items()):
-            chapter_vocab_file.write(
-                orjson.dumps(
-                    {
-                        'chapterid': chapterid,
-                        'chapter_vocab': list(vocab)
-                    }
-                ) + b'\n'
-            )
-        chapter_vocab_file.close()
+        with open(chapter_vocab_file_name, 'wb') as chapter_vocab_file:
+            for chapterid, vocab in tqdm(self.chapter_vocab.items()):
+                chapter_vocab_file.write(
+                    orjson.dumps(
+                        {
+                            'chapterid': chapterid,
+                            'chapter_vocab': list(vocab)
+                        }
+                    ) + b'\n'
+                )
 
     def load(self, bible_index_dir: str | Traversable) -> None:
         '''

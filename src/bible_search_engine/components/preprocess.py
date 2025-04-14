@@ -3,7 +3,6 @@ Author: Ronen Huang
 """
 
 import spacy
-from spacy_wordnet.wordnet_annotator import WordnetAnnotator 
 from transformers import pipeline
 
 
