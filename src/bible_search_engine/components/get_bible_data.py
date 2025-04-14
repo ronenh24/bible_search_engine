@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 import re
 import json

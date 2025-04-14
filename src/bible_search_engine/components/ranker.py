@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 from collections import Counter
 from sentence_transformers import SentenceTransformer, util

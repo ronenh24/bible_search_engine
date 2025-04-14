@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 import os
 import pandas as pd
@@ -9,10 +11,18 @@ class Relevance:
     """
     Evaluates precision of ranker against test queries.
     """
-    def __init__(self, test_queries_path: str):
-        if not os.path.isfile(test_queries_path):
-            raise Exception('Test Queries Relevances file does not exist.')
-        self.relevance_df = pd.read_csv(test_queries_path)
+    def __init__(self, queries_paths: list[str] | str):
+        if isinstance(queries_paths, str):
+            queries_paths = [queries_paths]
+
+        self.relevance_df = pd.DataFrame()
+        for queries_path in queries_paths:
+            if not os.path.isfile(queries_path):
+                raise Exception('Test Queries Relevances file does not exist.')
+            self.relevance_df = pd.concat(
+                [self.relevance_df, pd.read_csv(queries_path)],
+                ignore_index=True
+            )
 
     def precision(self, ret_rel: list[int], cut_off: int = 15) -> float:
         '''

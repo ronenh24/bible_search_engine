@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 import os
 import multiprocessing
@@ -58,7 +60,7 @@ class L2RRanker:
         params_study.optimize(
             lambda trial: self.determine_params(
                 trial, train_queries_df, test_eval
-            ), 10
+            ), 20
         )
         best_params = params_study.best_params
 
@@ -79,8 +81,12 @@ class L2RRanker:
             best_params["mu"]
         )
 
+        queries_df = pd.concat(
+            [train_queries_df, pd.read_csv(test_queries_data)],
+            ignore_index=True
+        )
         train_features, train_relevance_scores, train_num_query_examples =\
-            self.get_train(train_queries_df)
+            self.get_train(queries_df)
 
         self.lightgbm_ranker.fit(
             train_features, train_relevance_scores,

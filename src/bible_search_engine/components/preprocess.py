@@ -3,6 +3,8 @@ Author: Ronen Huang
 """
 
 import spacy
+from spacy_wordnet.wordnet_annotator import WordnetAnnotator
+from nltk.corpus.reader.wordnet import Synset
 from transformers import pipeline
 
 
@@ -35,7 +37,8 @@ class NLPTokenizer:
             "text2text-generation", model="google/flan-t5-large"
         )
 
-    def tokenize(self, chapter_text: list[str] | str) -> list[str]:
+    def tokenize(self, chapter_text: list[str] | str,
+                 query: bool = True) -> list[str]:
         '''
         chapter_text: The Bible chapter text.
 
@@ -63,12 +66,8 @@ class NLPTokenizer:
             token_list = []
             if self.lemmatize:
                 synsets = token._.wordnet.synsets()
-                if synsets:
-                    for syn in synsets:
-                        token_list.extend(
-                            list(syn.lemma_names())
-                        )
-                    token_list = list(set(token_list))
+                if query and synsets:
+                    token_list = self.get_lemmas(synsets)
                 else:
                     token_list.append(token.lemma_)
             else:
@@ -92,3 +91,27 @@ class NLPTokenizer:
         return verse_text + " " + " ".join(
             self.flan_expansion(prompt)[0]["generated_text"].split(", ")
         )
+
+    def get_lemmas(self, synsets: list[Synset]) -> list[str]:
+        """
+        Get unique lemmas from sysnets.
+        """
+        lemmas = []
+        for syn in synsets:
+            for lemma in syn.lemma_names():
+
+                for lemma_part in self.spacy_tokenizer(
+                    lemma.replace("_", " ")
+                ):
+                    if not self.stopword and lemma_part.is_stop:
+                        continue
+
+                    if not self.punctuation and lemma_part.is_punct:
+                        continue
+
+                    if self.lemmatize:
+                        lemmas.append(lemma_part.lemma_)
+                    else:
+                        lemmas.append(lemma_part.text)
+
+        return list(set(lemmas))

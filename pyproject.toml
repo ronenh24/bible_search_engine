@@ -12,13 +12,13 @@ bible_search_engine = [
 
 [project]
 name = "bible-search-engine"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
   { name="Ronen Huang", email="ronenhuang24@gmail.com" },
 ]
 description = "Bible search engine incorporating natural language processing, deep learning, and machine learning."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "torchvision",
     "transformers",

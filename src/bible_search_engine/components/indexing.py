@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 from collections import Counter
 from bisect import insort_left, bisect_left
@@ -446,7 +448,7 @@ def create_bible_index(old_testament_path: str | None,
                 bible_chapter_text = bible_chapter['verses'].values()
                 bible_chapter_index.add_chapter(
                     bible_chapter_id, bible_chapter['num_verses'],
-                    nlp_tokenizer.tokenize(bible_chapter_text)
+                    nlp_tokenizer.tokenize(bible_chapter_text, False)
                 )
 
     # Index New Testament Bible chapters.
@@ -460,7 +462,7 @@ def create_bible_index(old_testament_path: str | None,
                 bible_chapter_text = bible_chapter['verses'].values()
                 bible_chapter_index.add_chapter(
                     bible_chapter_id, bible_chapter['num_verses'],
-                    nlp_tokenizer.tokenize(bible_chapter_text)
+                    nlp_tokenizer.tokenize(bible_chapter_text, False)
                 )
 
     return bible_chapter_index

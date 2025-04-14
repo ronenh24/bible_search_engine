@@ -1,4 +1,6 @@
-# Author: Ronen Huang
+"""
+Author: Ronen Huang
+"""
 
 from importlib.resources import files
 import os
@@ -182,7 +184,7 @@ class BibleSearchEngine:
             traditional_hyperparams_file =\
                 "initial_params_" + version + ".json"
             traditional_hyperparams_path =\
-                files("bible_search_engine" / traditional_hyperparams_file)
+                files("bible_search_engine") / traditional_hyperparams_file
             with traditional_hyperparams_path.open("rb") as hp_file:
                 hp_dict = orjson.loads(hp_file.readline())
             tf_idf_ranker = TFIDFRanker(bible_chapter_index, nlp_tokenizer)
