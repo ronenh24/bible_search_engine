@@ -18,7 +18,7 @@ authors = [
 ]
 description = "Bible search engine incorporating natural language processing, deep learning, and machine learning."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "torchvision",
     "transformers",

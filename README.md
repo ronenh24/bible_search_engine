@@ -72,8 +72,9 @@ yields
     ```
 - The `NLPTokenizer` class is in [`preprocess.py`](src/bible_search_engine/components/preprocess.py). The `tokenize` function splits the Bible chapter text into tokens for indexing.
   - Libraries:
-    - [`transformers`](https://huggingface.co/docs/transformers/en/index) with [`google/flan-t5-large`](https://huggingface.co/google/flan-t5-large) model to expand chapters and queries.
+    - [`transformers`](https://huggingface.co/docs/transformers/en/index) with [`google/flan-t5-large`](https://huggingface.co/google/flan-t5-large) model to expand chapters and queries with keywords.
     - [`spacy`](https://spacy.io/) to tokenize text.
+    - [`nltk`](https://www.nltk.org/) to expand queries with synonyms.
   - Usage Example
     ```python
     from bible_search_engine.components.preprocess import get_bible_data
@@ -167,7 +168,7 @@ yields
 - Predicted Relevance from Annotated Queries Data for Completeness
 - Incorporated Large Language Model for Chapter and Query Expansion
 - Colbert Learning to Rank Feature for Efficiency
-- Tuned Hyperparameters for Optimal Ranking
+- Tuned Hyperparameters **Including Feature Extractor** for Optimal Ranking
 
 ## Planned Improvements
 - Add Support for Different Bible Versions
