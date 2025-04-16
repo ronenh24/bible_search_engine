@@ -4,7 +4,7 @@
 Ronen Huang  
 
 ## Time Frame
-October 2023 to December 2023, March 2025 - Present (deploy as package)
+October 2023 to December 2023, March 2025 to Present (deploy as package)
 
 ## Data Source
 The web pages for each book of the New International Version Bible can be accessed via [https://www.biblestudytools.com/](https://www.biblestudytools.com/).
