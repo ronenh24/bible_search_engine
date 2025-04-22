@@ -6,6 +6,7 @@ from collections import Counter
 from bisect import insort_left, bisect_left
 import os
 from importlib.resources.abc import Traversable
+from importlib.resources import files
 from tqdm import tqdm
 import orjson
 from bible_search_engine.components.preprocess import NLPTokenizer
@@ -335,12 +336,14 @@ class BibleChapterIndex:
 
         bible_index_dir: Directory to load index from.
         '''
+        if isinstance(bible_index_dir, str):
+            bible_index_dir = files(bible_index_dir.replace("/", "."))
         self.index.clear()
         self.statistics.clear()
         self.chapter_metadata.clear()
         self.term_metadata.clear()
         self.chapter_vocab.clear()
-        if not os.path.isdir(bible_index_dir):
+        if not bible_index_dir.is_dir:
             raise Exception('Index directory does not exist.')
         self._load_index(bible_index_dir)
         self._load_stats(bible_index_dir)
@@ -349,84 +352,59 @@ class BibleChapterIndex:
         self._load_chapter_vocab(bible_index_dir)
         print('Loaded Bible Index from ' + str(bible_index_dir))
 
-    def _load_index(self, bible_index_dir: str | Traversable) -> None:
-        if isinstance(bible_index_dir, Traversable):
-            index_file = (bible_index_dir / "index.jsonl").open('rb')
-        else:
-            index_file_name = bible_index_dir + '/index.jsonl'
-            if not os.path.isfile(index_file_name):
-                raise Exception('Index file does not exist.')
-            index_file = open(index_file_name, 'rb')
-        for term_postings_line in tqdm(index_file):
-            term_postings = orjson.loads(term_postings_line)
-            self.index[term_postings['term']] =\
-                [
-                    tuple(chapter_freq)
-                    for chapter_freq in term_postings['postings']
-                ]
-        index_file.close()
+    def _load_index(self, bible_index_dir: Traversable) -> None:
+        index_path = bible_index_dir / "index.jsonl"
+        if not index_path.is_file:
+            raise Exception('Index file does not exist.')
+        with index_path.open('rb') as index_file:
+            for term_postings_line in tqdm(index_file):
+                term_postings = orjson.loads(term_postings_line)
+                self.index[term_postings['term']] =\
+                    [
+                        tuple(chapter_freq)
+                        for chapter_freq in term_postings['postings']
+                    ]
 
-    def _load_stats(self, bible_index_dir: str | Traversable) -> None:
-        if isinstance(bible_index_dir, Traversable):
-            stats_file = (bible_index_dir / "statistics.json").open('rb')
-        else:
-            stats_file_name = bible_index_dir + '/statistics.json'
-            if not os.path.isfile(stats_file_name):
-                raise Exception('Statistics file does not exist.')
-            stats_file = open(stats_file_name, 'rb')
-        self.statistics = orjson.loads(stats_file.readline())
-        stats_file.close()
+    def _load_stats(self, bible_index_dir: Traversable) -> None:
+        stats_path = bible_index_dir / "statistics.json"
+        if not stats_path.is_file:
+            raise Exception('Statistics file does not exist.')
+        with stats_path.open("rb") as stats_file:
+            self.statistics = orjson.loads(stats_file.readline())
 
-    def _load_chapter_metadata(self, bible_index_dir: str | Traversable) ->\
+    def _load_chapter_metadata(self, bible_index_dir: Traversable) ->\
             None:
-        if isinstance(bible_index_dir, Traversable):
-            chapter_metadata_file =\
-                (bible_index_dir / "chapter_metadata.jsonl").open('rb')
-        else:
-            chapter_metadata_file_name =\
-                bible_index_dir + '/chapter_metadata.jsonl'
-            if not os.path.isfile(chapter_metadata_file_name):
-                raise Exception('Chapter metadata file does not exist.')
-            chapter_metadata_file = open(chapter_metadata_file_name, 'rb')
-        for chapter_metadata_line in tqdm(chapter_metadata_file):
-            chapter_metadata = orjson.loads(chapter_metadata_line)
-            self.chapter_metadata[chapter_metadata['chapterid']] =\
-                chapter_metadata['chapter_metadata']
-        chapter_metadata_file.close()
+        chapter_metadata_path = bible_index_dir / "chapter_metadata.jsonl"
+        if not chapter_metadata_path.is_file:
+            raise Exception('Chapter metadata file does not exist.')
+        with chapter_metadata_path.open("rb") as chapter_metadata_file:
+            for chapter_metadata_line in tqdm(chapter_metadata_file):
+                chapter_metadata = orjson.loads(chapter_metadata_line)
+                self.chapter_metadata[chapter_metadata['chapterid']] =\
+                    chapter_metadata['chapter_metadata']
 
     def _load_term_metadata(self, bible_index_dir: str | Traversable) -> None:
-        if isinstance(bible_index_dir, Traversable):
-            term_metadata_file =\
-                (bible_index_dir / "term_metadata.jsonl").open('rb')
-        else:
-            term_metadata_file_name = bible_index_dir + '/term_metadata.jsonl'
-            if not os.path.isfile(term_metadata_file_name):
-                raise Exception('Term metadata file does not exist.')
-            term_metadata_file = open(term_metadata_file_name, 'rb')
-        for term_metadata_line in tqdm(term_metadata_file):
-            term_metadata = orjson.loads(term_metadata_line)
-            self.term_metadata[term_metadata['term']] =\
-                term_metadata['term_metadata']
-        term_metadata_file.close()
+        term_metadata_path = bible_index_dir / "term_metadata.jsonl"
+        if not term_metadata_path.is_file:
+            raise Exception('Term metadata file does not exist.')
+        with term_metadata_path.open("rb") as term_metadata_file:
+            for term_metadata_line in tqdm(term_metadata_file):
+                term_metadata = orjson.loads(term_metadata_line)
+                self.term_metadata[term_metadata['term']] =\
+                    term_metadata['term_metadata']
 
     def _load_chapter_vocab(self, bible_index_dir: str | Traversable) -> None:
-        if isinstance(bible_index_dir, Traversable):
-            chapter_vocab_file =\
-                (bible_index_dir / "chapter_vocab.jsonl").open('rb')
-        else:
-            chapter_vocab_file_name = bible_index_dir + '/chapter_vocab.jsonl'
-            if not os.path.isfile(chapter_vocab_file_name):
-                raise Exception('Chapter vocabulary file does not exist.')
-            chapter_vocab_file = open(chapter_vocab_file_name, 'rb')
-        for chapter_vocab_line in tqdm(chapter_vocab_file):
-            chapter_vocab = orjson.loads(chapter_vocab_line)
-            self.chapter_vocab[chapter_vocab['chapterid']] =\
-                set(chapter_vocab['chapter_vocab'])
-        chapter_vocab_file.close()
+        chapter_vocab_path = bible_index_dir / "chapter_vocab.jsonl"
+        if not chapter_vocab_path.is_file:
+            raise Exception('Chapter vocabulary file does not exist.')
+        with chapter_vocab_path.open("rb") as chapter_vocab_file:
+            for chapter_vocab_line in tqdm(chapter_vocab_file):
+                chapter_vocab = orjson.loads(chapter_vocab_line)
+                self.chapter_vocab[chapter_vocab['chapterid']] =\
+                    set(chapter_vocab['chapter_vocab'])
 
 
-def create_bible_index(old_testament_path: str | None,
-                       new_testament_path: str | None,
+def create_bible_index(old_testament_path: str, new_testament_path: str,
                        nlp_tokenizer: NLPTokenizer) -> BibleChapterIndex:
     '''
     old_testament_path: Path to Old Testament Bible chapters.
@@ -438,31 +416,29 @@ def create_bible_index(old_testament_path: str | None,
     bible_chapter_index = BibleChapterIndex()
 
     # Index Old Testament Bible chapters.
-    if old_testament_path:
-        if not os.path.isfile(old_testament_path):
-            raise Exception('Old Testament file does not exist.')
-        with open(old_testament_path, 'rb') as old_testament_file:
-            for bible_chapter_line in tqdm(old_testament_file):
-                bible_chapter = orjson.loads(bible_chapter_line)
-                bible_chapter_id = bible_chapter['chapterid']
-                bible_chapter_text = bible_chapter['verses'].values()
-                bible_chapter_index.add_chapter(
-                    bible_chapter_id, bible_chapter['num_verses'],
-                    nlp_tokenizer.tokenize(bible_chapter_text, False)
-                )
+    if not os.path.isfile(old_testament_path):
+        raise Exception('Old Testament file does not exist.')
+    with open(old_testament_path, 'rb') as old_testament_file:
+        for bible_chapter_line in tqdm(old_testament_file):
+            bible_chapter = orjson.loads(bible_chapter_line)
+            bible_chapter_id = bible_chapter['chapterid']
+            bible_chapter_text = bible_chapter['verses'].values()
+            bible_chapter_index.add_chapter(
+                bible_chapter_id, bible_chapter['num_verses'],
+                nlp_tokenizer.tokenize(bible_chapter_text, False)
+            )
 
     # Index New Testament Bible chapters.
-    if new_testament_path:
-        if not os.path.isfile(new_testament_path):
-            raise Exception('New Testament file does not exist.')
-        with open(new_testament_path, 'rb') as new_testament_file:
-            for bible_chapter_line in tqdm(new_testament_file):
-                bible_chapter = orjson.loads(bible_chapter_line)
-                bible_chapter_id = bible_chapter['chapterid']
-                bible_chapter_text = bible_chapter['verses'].values()
-                bible_chapter_index.add_chapter(
-                    bible_chapter_id, bible_chapter['num_verses'],
-                    nlp_tokenizer.tokenize(bible_chapter_text, False)
-                )
+    if not os.path.isfile(new_testament_path):
+        raise Exception('New Testament file does not exist.')
+    with open(new_testament_path, 'rb') as new_testament_file:
+        for bible_chapter_line in tqdm(new_testament_file):
+            bible_chapter = orjson.loads(bible_chapter_line)
+            bible_chapter_id = bible_chapter['chapterid']
+            bible_chapter_text = bible_chapter['verses'].values()
+            bible_chapter_index.add_chapter(
+                bible_chapter_id, bible_chapter['num_verses'],
+                nlp_tokenizer.tokenize(bible_chapter_text, False)
+            )
 
     return bible_chapter_index

@@ -28,7 +28,7 @@ class TraditionalRanker():
         self.bible_chapter_index = bible_chapter_index
         self.nlp_tokenizer = nlp_tokenizer
 
-    def query(self, query: str) -> list[tuple[int, int]]:
+    def query(self, query: str) -> list[tuple[int, float]]:
         '''
         query: Query of interest.
 
@@ -60,7 +60,7 @@ class RandomRanker(TraditionalRanker):
                  nlp_tokenizer: NLPTokenizer) -> None:
         super().__init__(bible_chapter_index, nlp_tokenizer)
 
-    def query(self, query: str) -> list[tuple[int, int]]:
+    def query(self, query: str) -> list[tuple[int, float]]:
         results = []
 
         query_parts = self.nlp_tokenizer.tokenize(query)
@@ -111,7 +111,7 @@ class TFIDFRanker(TraditionalRanker):
                  nlp_tokenizer: NLPTokenizer) -> None:
         super().__init__(bible_chapter_index, nlp_tokenizer)
 
-    def query(self, query: str) -> list[tuple[int, int]]:
+    def query(self, query: str) -> list[tuple[int, float]]:
         results = []
 
         query_parts = self.nlp_tokenizer.tokenize(query)
@@ -205,7 +205,7 @@ class BM25Ranker(TraditionalRanker):
         """
         return (self.b, self.k1, self.k3)
 
-    def query(self, query: str) -> list[tuple[int, int]]:
+    def query(self, query: str) -> list[tuple[int, float]]:
         results = []
 
         query_parts = self.nlp_tokenizer.tokenize(query)
@@ -302,7 +302,7 @@ class DirichletLMRanker(TraditionalRanker):
         """
         return self.mu
 
-    def query(self, query: str) -> list[tuple[int, int]]:
+    def query(self, query: str) -> list[tuple[int, float]]:
         results = []
 
         query_parts = self.nlp_tokenizer.tokenize(query)
@@ -406,19 +406,9 @@ class BiEncoderRanker:
             encoded_query, self.encoded_chapters
         )[0].cpu().tolist()
 
-        chapter_results = {}
-        for chapter_id, result in tqdm(zip(self.chapter_ids, scores)):
-            if chapter_id not in chapter_results:
-                chapter_results[chapter_id] = []
-            chapter_results[chapter_id].append(result)
-        for chapter_id, chapter_scores in chapter_results.items():
-            chapter_results[chapter_id] =\
-                (
-                    chapter_id, np.mean(chapter_scores).item()
-                )
-
         results = [
-            result for result in chapter_results.values() if result[1] != 0
+            (chapter_id, score) for chapter_id, score in
+            zip(self.chapter_ids, scores)
         ]
         results = sorted(
             results, key=lambda chapter_score: chapter_score[1],

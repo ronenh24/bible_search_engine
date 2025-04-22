@@ -116,7 +116,7 @@ yields
     encoded_chapters_path = 'bible_search_engine/bible_data/encoded_chapters_niv.npy'
     chapter_ids_path = 'bible_search_engine/bible_data/chapterids_niv.json'
     encoded_chapters = np.load(encoded_chapters_path)
-    with chapter_ids_path.open('rb') as chapter_ids_file:
+    with open(chapter_ids_path, 'rb') as chapter_ids_file:
         chapter_ids = orjson.loads(chapter_ids_file.readline())
     
     bi_encoder_ranker = BiEncoderRanker('msmarco-distilbert-dot-v5', encoded_chapters, chapter_ids)

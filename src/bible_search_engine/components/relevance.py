@@ -33,9 +33,8 @@ class Relevance:
         Calculates the relevance precision at the cut off of the returned
         Bible chapters.
         '''
-        num_ret = min(len(ret_rel), cut_off)
-        if num_ret > 0:
-            return sum(ret_rel[:num_ret]) / num_ret
+        if cut_off > 0:
+            return sum(ret_rel[:cut_off]) / cut_off
         else:
             return 0
 
@@ -58,6 +57,7 @@ class Relevance:
             ][['chapterid', 'relevance']].sort_values(
                 'relevance', ascending=False
             )
+            num_rel = rel_chapters[rel_chapters["relevance"] >= 4].shape[0]
             all_ret_chapters = ranker.query(query)
             ret_chapter_precision_labels = []
 
@@ -76,7 +76,7 @@ class Relevance:
                         ret_chapter_precision_labels.append(1)
 
             query_precision = self.precision(
-                ret_chapter_precision_labels, cut_off
+                ret_chapter_precision_labels, min(cut_off, num_rel)
             )
             print(query_precision)
             print()

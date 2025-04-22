@@ -70,10 +70,10 @@ class L2RRanker:
             'max_depth': best_params["max_depth"],
             'num_iterations': best_params["num_iterations"],
             'min_data_in_leaf': best_params["min_data_in_leaf"],
-            'metric': 'ndcg', 'importance_type': 'gain', 'verbosity': 2,
+            'metric': 'ndcg', 'importance_type': 'gain', 'verbosity': -1,
             'n_jobs': multiprocessing.cpu_count()}
         self.lightgbm_ranker =\
-            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
+            lightgbm.LGBMRanker(**lgbmranker_params)
         self.feature_extractor.bm25_ranker.set_params(
             best_params["b"], best_params["k1"], best_params["k3"]
         )
@@ -125,11 +125,11 @@ class L2RRanker:
             'num_leaves': num_leaves, 'learning_rate': learning_rate,
             'max_depth': max_depth, 'num_iterations': num_iterations,
             'min_data_in_leaf': min_data_in_leaf, 'metric': 'ndcg',
-            'importance_type': 'gain', 'verbosity': 2,
+            'importance_type': 'gain', 'verbosity': -1,
             'n_jobs': multiprocessing.cpu_count()
         }
         self.lightgbm_ranker =\
-            lightgbm.LGBMRanker().set_params(**lgbmranker_params)
+            lightgbm.LGBMRanker(**lgbmranker_params)
         self.lightgbm_ranker.fit(
             train_features, train_relevance_scores,
             group=train_num_query_examples
@@ -197,10 +197,10 @@ class L2RRanker:
         if initial_results == []:
             return initial_results
 
-        # Rerank top 50 initial results with learning to rank.
-        top_100_initial_results = initial_results[:100]
+        # Rerank top 200 initial results with learning to rank.
+        top_200_initial_results = initial_results[:200]
         test_features = []
-        for chapterid, _ in tqdm(top_100_initial_results):
+        for chapterid, _ in tqdm(top_200_initial_results):
             chapter_term_counts = {}
             for query_part in set_query_parts.intersection(
                 self.bible_chapter_index.get_chapter_vocab(chapterid)
@@ -216,12 +216,12 @@ class L2RRanker:
             )
 
         results = [
-            top_100_initial_results[i]
+            top_200_initial_results[i]
             for i in np.argsort(
                 self.lightgbm_ranker.predict(test_features)
             )[::-1]
         ]
-        results.extend(initial_results[100:])
+        results.extend(initial_results[200:])
 
         return results
 
