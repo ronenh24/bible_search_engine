@@ -129,7 +129,7 @@ yields
     ```
 - The `L2RRanker` class in [`l2r.py`](src/bible_search_engine/components/l2r.py) has a `train` function and a `query` function. The `L2RFeatureExtractor` has a `get_features` function.
   - Libraries:
-    - [`lightgbm`](https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMRanker.html) to implement learning to rank for reranking of top 100 initial results.
+    - [`lightgbm`](https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMRanker.html) to implement learning to rank for reranking of top 200 initial results.
     - [`optuna`](https://optuna.readthedocs.io/en/stable/index.html) to tune hyperparameters `learning_rate`, `num_iterations`, `max_depth`, `num_leaves`, `min_data_in_leaf`.
   - Usage Example
     ```python
