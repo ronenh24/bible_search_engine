@@ -24,7 +24,7 @@ class L2RRanker:
     """
     def __init__(self, bible_chapter_index: BibleChapterIndex,
                  nlp_tokenizer: NLPTokenizer,
-                 ranker: TraditionalRanker | BiEncoderRanker,
+                 ranker: TraditionalRanker | ColbertRanker,
                  feature_extractor: 'L2RFeatureExtractor') -> None:
         '''
         bible_chapter_index: Bible chapter index.
@@ -47,9 +47,9 @@ class L2RRanker:
         if not os.path.isfile(train_queries_data):
             raise Exception('Train queries data does not exist.')
         if not os.path.isfile(test_queries_data):
-            raise Exception('Train queries data does not exist.')
+            raise Exception('Test queries data does not exist.')
 
-        train_queries_df = pd.read_csv(train_queries_data)
+        train_eval = Relevance(train_queries_data)
 
         test_eval = Relevance(test_queries_data)
 
@@ -59,7 +59,7 @@ class L2RRanker:
         )
         params_study.optimize(
             lambda trial: self.determine_params(
-                trial, train_queries_df, test_eval
+                trial, train_eval, test_eval
             ), 20
         )
         best_params = params_study.best_params
@@ -82,7 +82,7 @@ class L2RRanker:
         )
 
         queries_df = pd.concat(
-            [train_queries_df, pd.read_csv(test_queries_data)],
+            [train_eval.relevance_df, test_eval.relevance_df],
             ignore_index=True
         )
         train_features, train_relevance_scores, train_num_query_examples =\
@@ -94,7 +94,7 @@ class L2RRanker:
         )
 
     def determine_params(self, trial: optuna.Trial,
-                         train_queries_df: pd.DataFrame,
+                         train_eval: Relevance,
                          test_eval: Relevance) -> float:
         """
         Returns test precision for hyperparameters.
@@ -107,7 +107,7 @@ class L2RRanker:
         )
         max_depth = trial.suggest_int("max_depth", 7, 14)
         num_leaves = trial.suggest_int(
-            "num_leaves", 2 ** (max_depth - 1), 2 ** max_depth
+            "num_leaves", 2 ** (max_depth - 2), 2 ** (max_depth - 1)
         )
         min_data_in_leaf = trial.suggest_int("min_data_in_leaf", 5, 35)
         b = trial.suggest_float("b", 0.3, 0.9)
@@ -119,7 +119,7 @@ class L2RRanker:
         self.feature_extractor.dirichlet_lm_ranker.set_params(mu)
 
         train_features, train_relevance_scores, train_num_query_examples =\
-            self.get_train(train_queries_df)
+            self.get_train(train_eval.relevance_df)
 
         lgbmranker_params = {
             'num_leaves': num_leaves, 'learning_rate': learning_rate,
@@ -136,8 +136,22 @@ class L2RRanker:
         )
 
         results = [s for _, s in test_eval.evaluate_ranker_results(self)]
+
+        test_features, test_relevance_scores, test_num_query_examples =\
+            self.get_train(test_eval.relevance_df)
+        self.lightgbm_ranker =\
+            lightgbm.LGBMRanker(**lgbmranker_params)
+        self.lightgbm_ranker.fit(
+            test_features, test_relevance_scores,
+            group=test_num_query_examples
+        )
+
+        results.extend(
+            [s for _, s in train_eval.evaluate_ranker_results(self)]
+        )
+
         return st.t.interval(
-            0.95, len(results) - 1, np.mean(results),
+            0.99, len(results) - 1, np.mean(results),
             st.sem(results)
         )[0]
 
@@ -234,25 +248,25 @@ class L2RFeatureExtractor:
     Learning to Rank feature extraction.
     """
     def __init__(self, bible_chapter_index: BibleChapterIndex,
-                 nlp_tokenizer: NLPTokenizer,
-                 tf_idf_ranker: TFIDFRanker, bm25_ranker: BM25Ranker,
+                 nlp_tokenizer: NLPTokenizer, tf_idf_ranker: TFIDFRanker,
+                 bm25_ranker: BM25Ranker,
                  dirichlet_lm_ranker: DirichletLMRanker,
-                 colbert_ranker: ColbertRanker) -> None:
+                 biencoder_ranker: BiEncoderRanker) -> None:
         '''
         bible_chapter_index: Bible chapter index.
         nlp_tokenizer: NLP tokenizer.
         tf_idf_ranker: TF-IDF ranker with score.
         bm25_ranker: BM25 ranker with score.
         dirichlet_lm_ranker: Dirichlet LM ranker with score.
-        colbert_ranker: Colbert ranker with score.
         '''
         self.bible_chapter_index = bible_chapter_index
         self.nlp_tokenizer = nlp_tokenizer
         self.tf_idf_ranker = tf_idf_ranker
         self.bm25_ranker = bm25_ranker
         self.dirichlet_lm_ranker = dirichlet_lm_ranker
+        self.biencoder_ranker = biencoder_ranker
         # self.cross_encoder_ranker = cross_encoder_ranker
-        self.colbert_ranker = colbert_ranker
+        # self.colbert_ranker = colbert_ranker
 
     def get_number_verses(self, chapterid: int) -> int:
         '''
@@ -328,14 +342,23 @@ class L2RFeatureExtractor:
     #    '''
     #    return self.cross_encoder_ranker.score(chapterid, query)
 
-    def get_colbert_score(self, chapterid: int, query: str) -> float:
+    # def get_colbert_score(self, chapterid: int, query: str) -> float:
+    #     """
+    #     chapterid: Bible chapter id.
+    #     query: Query of interest.
+
+    #     Gets colbert score of the Bible chapter.
+    #     """
+    #     return self.colbert_ranker.score(chapterid, query)
+
+    def get_biencoder_score(self, chapterid: int, query: str) -> float:
         """
         chapterid: Bible chapter id.
         query: Query of interest.
 
-        Gets colbert score of the Bible chapter.
+        Gets biencoder score of the Bible chapter.
         """
-        return self.colbert_ranker.score(chapterid, query)
+        return self.biencoder_ranker.score(chapterid, query)
 
     def get_features(self, chapterid: int, chapter_term_counts: dict[str, int],
                      query_parts: list[str], query: str) -> list[float]:
@@ -348,9 +371,6 @@ class L2RFeatureExtractor:
         Get features of the Bible chapter.
         '''
         bible_chapter_features = []
-
-        # Chapter ID.
-        bible_chapter_features.append(chapterid)
 
         # Number of verses.
         bible_chapter_features.append(self.get_number_verses(chapterid))
@@ -380,7 +400,9 @@ class L2RFeatureExtractor:
         #   self.get_cross_encoder_score(chapterid, query)
         # )
 
-        # Colbert.
-        bible_chapter_features.append(self.get_colbert_score(chapterid, query))
+        # Biencoder.
+        bible_chapter_features.append(
+            self.get_biencoder_score(chapterid, query)
+        )
 
         return bible_chapter_features

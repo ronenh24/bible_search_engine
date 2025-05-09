@@ -391,6 +391,8 @@ class BiEncoderRanker:
         self.bi_encoder_model = SentenceTransformer(bi_encoder_model_name)
         self.encoded_chapters = encoded_chapters
         self.chapter_ids = chapter_ids
+        self.query_term = ""
+        self.chapter_scores = {}
 
     def query(self, query: str) -> list[tuple[int, float]]:
         '''
@@ -398,9 +400,10 @@ class BiEncoderRanker:
 
         Search for the relevant Bible chapters to the query.
         '''
-        if query.strip() == '' or len(self.encoded_chapters) == 0:
+        if query.strip() == '':
             return []
 
+        self.query_term = query
         encoded_query = self.bi_encoder_model.encode(query)
         scores = util.dot_score(
             encoded_query, self.encoded_chapters
@@ -408,35 +411,16 @@ class BiEncoderRanker:
 
         results = [
             (chapter_id, score) for chapter_id, score in
-            zip(self.chapter_ids, scores)
+            zip(self.chapter_ids, scores) if score != 0
         ]
         results = sorted(
             results, key=lambda chapter_score: chapter_score[1],
             reverse=True
         )
+        for chapterid, score in results:
+            self.chapter_scores[chapterid] = score
 
         return results
-
-    def ranker_name(self) -> str:
-        return 'bi_encoder_ranker'
-
-
-class CrossEncoderRanker:
-    """
-    Cross-encoder ranker.
-    """
-    def __init__(self, cross_encoder_model_name: str,
-                 verses: dict[int, list[str]]) -> None:
-        '''
-        cross_encoder_model_name: Cross-encoder model.
-        verses: Bible chapters and their verses.
-
-        Search for the relevant Bible chapters to the query.
-        '''
-        self.cross_encoder_model = CrossEncoder(
-            cross_encoder_model_name, max_length=512
-        )
-        self.verses = verses
 
     def score(self, chapterid: int, query: str) -> float:
         '''
@@ -445,18 +429,53 @@ class CrossEncoderRanker:
 
         Scores the relevance of the Bible chapter to the query.
         '''
-        if query.strip() == '' or chapterid not in self.verses:
+        if query != self.query_term:
+            self.query(query)
+
+        if chapterid not in self.chapter_scores:
             return 0
-        score = []
-        for i in range(0, len(self.verses[chapterid]), 5):
-            verses = " ".join(self.verses[chapterid][i:i + 5])
-            verse_score =\
-                self.cross_encoder_model.predict([(query, verses)])[0]
-            score.append(verse_score)
-        return np.mean(score)
+        return self.chapter_scores[chapterid]
 
     def ranker_name(self) -> str:
-        return 'cross_encoder_ranker'
+        return 'bi_encoder_ranker'
+
+
+# class CrossEncoderRanker:
+#     """
+#     Cross-encoder ranker.
+#     """
+#     def __init__(self, cross_encoder_model_name: str,
+#                  verses: dict[int, list[str]]) -> None:
+#         '''
+#         cross_encoder_model_name: Cross-encoder model.
+#         verses: Bible chapters and their verses.
+
+#         Search for the relevant Bible chapters to the query.
+#         '''
+#         self.cross_encoder_model = CrossEncoder(
+#             cross_encoder_model_name, max_length=512
+#         )
+#         self.verses = verses
+
+#     def score(self, chapterid: int, query: str) -> float:
+#         '''
+#         chapterid: Bible chapter id.
+#         query: Query of interest.
+
+#         Scores the relevance of the Bible chapter to the query.
+#         '''
+#         if query.strip() == '' or chapterid not in self.verses:
+#             return 0
+#         score = []
+#         for i in range(0, len(self.verses[chapterid]), 5):
+#             verses = " ".join(self.verses[chapterid][i:i + 5])
+#             verse_score =\
+#                 self.cross_encoder_model.predict([(query, verses)])[0]
+#             score.append(verse_score)
+#         return np.mean(score)
+
+#     def ranker_name(self) -> str:
+#         return 'cross_encoder_ranker'
 
 
 class ColbertRanker:

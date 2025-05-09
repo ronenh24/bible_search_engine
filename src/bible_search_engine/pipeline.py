@@ -20,7 +20,7 @@ from bible_search_engine.components.indexing import\
     BibleChapterIndex, create_bible_index
 from bible_search_engine.components.ranker import\
     TFIDFRanker, BM25Ranker, DirichletLMRanker, \
-    BiEncoderRanker, CrossEncoderRanker, ColbertRanker
+    BiEncoderRanker, ColbertRanker
 from bible_search_engine.components.l2r import L2RRanker, L2RFeatureExtractor
 
 
@@ -108,11 +108,6 @@ class BibleSearchEngine:
             bm25_ranker.set_params(hp_dict["b"], hp_dict["k1"], hp_dict["k3"])
             dirichlet_lm_ranker.set_params(hp_dict["mu"])
 
-        # Cross-encoder ranker.
-        # cross_encoder_ranker = self.get_cross_encoder(
-        #   old_testament_path.open('rb'), new_testament_path.open('rb')
-        # )
-
         # Bible chapter titles and verses.
         chapter_ids, chapter_texts = self.get_chapter_verses(
             old_testament_path, new_testament_path
@@ -123,12 +118,6 @@ class BibleSearchEngine:
             self.get_colbert(chapter_ids, chapter_texts)
         colbert_ranker = ColbertRanker(
             "colbert-ir/colbertv2.0", "bible_chapters"
-        )
-
-        # Learning to Rank features.
-        l2r_feature_extractor = L2RFeatureExtractor(
-            bible_chapter_index, nlp_tokenizer, tf_idf_ranker,
-            bm25_ranker, dirichlet_lm_ranker, colbert_ranker
         )
 
         # Bi-encoder ranker.
@@ -150,10 +139,16 @@ class BibleSearchEngine:
             'msmarco-distilbert-dot-v5', encoded_chapters, chapter_ids
         )
 
+        # Learning to Rank features.
+        l2r_feature_extractor = L2RFeatureExtractor(
+            bible_chapter_index, nlp_tokenizer, tf_idf_ranker,
+            bm25_ranker, dirichlet_lm_ranker, bi_encoder_ranker
+        )
+
         # Learning to Rank ranker.
         self.l2r_ranker = L2RRanker(
             bible_chapter_index, nlp_tokenizer,
-            bi_encoder_ranker, l2r_feature_extractor
+            colbert_ranker, l2r_feature_extractor
         )
         if train_mode:
             self.l2r_ranker.train(
@@ -177,24 +172,6 @@ class BibleSearchEngine:
             self.l2r_ranker.lightgbm_ranker = joblib.load(
                 initial_ranker_path
             )
-
-    def get_cross_encoder(self, old_testament_path: Traversable,
-                          new_testament_path: Traversable) ->\
-            CrossEncoderRanker:
-        verses = {}
-        with old_testament_path.open("rb") as old_testament_file:
-            for bible_chapter_line in tqdm(old_testament_file):
-                bible_chapter = orjson.loads(bible_chapter_line)
-                verses[bible_chapter['chapterid']] =\
-                    [verse for verse in bible_chapter['verses'].values()]
-        with new_testament_path.open("rb") as new_testament_file:
-            for bible_chapter_line in tqdm(new_testament_file):
-                bible_chapter = orjson.loads(bible_chapter_line)
-                verses[bible_chapter['chapterid']] =\
-                    [verse for verse in bible_chapter['verses'].values()]
-        return CrossEncoderRanker(
-            'cross-encoder/msmarco-MiniLM-L6-en-de-v1', verses
-        )
 
     def get_colbert(self, chapter_ids: list[int], chapter_texts: list[str]) ->\
             None:

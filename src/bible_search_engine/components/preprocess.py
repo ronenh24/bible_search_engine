@@ -25,7 +25,7 @@ class NLPTokenizer:
         punctuation: True to include punctuation. Defaults to False.
         lemmatize: True to apply lemmatization. Defaults to True.
         '''
-        self.spacy_tokenizer = spacy.load('en_core_web_lg')
+        self.spacy_tokenizer = spacy.load('en_core_web_md')
         self.spacy_tokenizer.add_pipe("spacy_wordnet", after='tagger')
         if multiword_expr:
             self.spacy_tokenizer.add_pipe('merge_entities')
@@ -34,7 +34,7 @@ class NLPTokenizer:
         self.punctuation = punctuation
         self.lemmatize = lemmatize
         self.flan_expansion = pipeline(
-            "text2text-generation", model="google/flan-t5-large"
+            "text2text-generation", model="google/flan-t5-base"
         )
 
     def tokenize(self, chapter_text: list[str] | str,

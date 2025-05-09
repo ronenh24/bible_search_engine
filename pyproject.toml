@@ -8,11 +8,14 @@ bible_search_engine = [
     "bible_index_*/*.*",
     "initial_ranker_*.pkl",
     "initial_params_*.json",
+    "bible_queries_relevances/README.md",
+    "bible_queries_relevances/test_queries_relevances.csv",
+    "bible_queries_relevances/train_queries_relevances.csv",
 ]
 
 [project]
 name = "bible-search-engine"
-version = "0.2.2"
+version = "0.2.3"
 authors = [
   { name="Ronen Huang", email="ronenhuang24@gmail.com" },
 ]

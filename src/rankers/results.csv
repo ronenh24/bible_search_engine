@@ -1,4 +1,14 @@
 Ranker,Ranker Type,Precision at 15,Query
+Random,Baseline,0.0,What is the significance of the covenant God made with Abraham?
+Random,Baseline,0.13333333333333333,"If God is merciful and kind, why do people still suffer in this world?"
+Random,Baseline,0.4666666666666667,How do the ten commandments apply today?
+Random,Baseline,0.6,Where does God show up in our lives if he is not bounded by this world?
+Random,Baseline,0.5333333333333333,Who were the kings of Israel and were they faithful to God?
+Random,Baseline,0.26666666666666666,What are the eternal consequences of sin?
+Random,Baseline,0.2,Why did Jesus die on the cross?
+Random,Baseline,0.26666666666666666,How can we be faithful to God?
+Random,Baseline,0.5333333333333333,Where does God lead his people to?
+Random,Baseline,0.7333333333333333,Who are the enemies of God?
 Random,Baseline,0.06666666666666667,What did God do to unloyal servants?
 Random,Baseline,0.0,Why should we listen to authority and what are the exceptions?
 Random,Baseline,0.06666666666666667,How do we get saved and know when we are saved?
@@ -9,53 +19,123 @@ Random,Baseline,0.13333333333333333,Why did Judas betray Jesus?
 Random,Baseline,0.3333333333333333,How do we face discrimination and injustice?
 Random,Baseline,0.26666666666666666,Where do we find comfort and peace?
 Random,Baseline,0.4,Who has received prophecies from God?
+TF-IDF,Baseline,0.7333333333333333,What is the significance of the covenant God made with Abraham?
+TF-IDF,Baseline,0.9333333333333333,"If God is merciful and kind, why do people still suffer in this world?"
+TF-IDF,Baseline,0.6666666666666666,How do the ten commandments apply today?
+TF-IDF,Baseline,0.7333333333333333,Where does God show up in our lives if he is not bounded by this world?
+TF-IDF,Baseline,0.6666666666666666,Who were the kings of Israel and were they faithful to God?
+TF-IDF,Baseline,0.7333333333333333,What are the eternal consequences of sin?
+TF-IDF,Baseline,0.6666666666666666,Why did Jesus die on the cross?
+TF-IDF,Baseline,0.6666666666666666,How can we be faithful to God?
+TF-IDF,Baseline,0.8,Where does God lead his people to?
+TF-IDF,Baseline,1.0,Who are the enemies of God?
 TF-IDF,Baseline,0.8,What did God do to unloyal servants?
-TF-IDF,Baseline,0.6,Why should we listen to authority and what are the exceptions?
+TF-IDF,Baseline,0.6666666666666666,Why should we listen to authority and what are the exceptions?
 TF-IDF,Baseline,0.4666666666666667,How do we get saved and know when we are saved?
 TF-IDF,Baseline,0.6666666666666666,Where did Paul travel to spread the good news?
 TF-IDF,Baseline,0.4,Who does God want us to reach out to?
 TF-IDF,Baseline,0.8,What does God say about spirituality?
-TF-IDF,Baseline,0.6666666666666666,Why did Judas betray Jesus?
+TF-IDF,Baseline,0.5333333333333333,Why did Judas betray Jesus?
 TF-IDF,Baseline,0.8,How do we face discrimination and injustice?
 TF-IDF,Baseline,0.5333333333333333,Where do we find comfort and peace?
 TF-IDF,Baseline,0.9333333333333333,Who has received prophecies from God?
+BM25,Baseline,0.6,What is the significance of the covenant God made with Abraham?
+BM25,Baseline,0.8,"If God is merciful and kind, why do people still suffer in this world?"
+BM25,Baseline,0.6666666666666666,How do the ten commandments apply today?
+BM25,Baseline,0.6,Where does God show up in our lives if he is not bounded by this world?
+BM25,Baseline,1.0,Who were the kings of Israel and were they faithful to God?
+BM25,Baseline,0.6666666666666666,What are the eternal consequences of sin?
+BM25,Baseline,0.6,Why did Jesus die on the cross?
+BM25,Baseline,0.26666666666666666,How can we be faithful to God?
+BM25,Baseline,0.9333333333333333,Where does God lead his people to?
+BM25,Baseline,0.6,Who are the enemies of God?
 BM25,Baseline,0.4666666666666667,What did God do to unloyal servants?
-BM25,Baseline,0.4,Why should we listen to authority and what are the exceptions?
-BM25,Baseline,0.4,How do we get saved and know when we are saved?
+BM25,Baseline,0.6,Why should we listen to authority and what are the exceptions?
+BM25,Baseline,0.4666666666666667,How do we get saved and know when we are saved?
 BM25,Baseline,0.6666666666666666,Where did Paul travel to spread the good news?
 BM25,Baseline,0.5333333333333333,Who does God want us to reach out to?
 BM25,Baseline,0.8666666666666667,What does God say about spirituality?
-BM25,Baseline,0.7333333333333333,Why did Judas betray Jesus?
+BM25,Baseline,0.6666666666666666,Why did Judas betray Jesus?
 BM25,Baseline,0.3333333333333333,How do we face discrimination and injustice?
-BM25,Baseline,0.3333333333333333,Where do we find comfort and peace?
-BM25,Baseline,0.9333333333333333,Who has received prophecies from God?
-Dirichlet LM,Baseline,0.4666666666666667,What did God do to unloyal servants?
-Dirichlet LM,Baseline,0.4,Why should we listen to authority and what are the exceptions?
-Dirichlet LM,Baseline,0.4,How do we get saved and know when we are saved?
-Dirichlet LM,Baseline,0.6666666666666666,Where did Paul travel to spread the good news?
-Dirichlet LM,Baseline,0.5333333333333333,Who does God want us to reach out to?
-Dirichlet LM,Baseline,0.8666666666666667,What does God say about spirituality?
-Dirichlet LM,Baseline,0.7333333333333333,Why did Judas betray Jesus?
+BM25,Baseline,0.5333333333333333,Where do we find comfort and peace?
+BM25,Baseline,1.0,Who has received prophecies from God?
+Dirichlet LM,Baseline,0.4,What is the significance of the covenant God made with Abraham?
+Dirichlet LM,Baseline,0.6666666666666666,"If God is merciful and kind, why do people still suffer in this world?"
+Dirichlet LM,Baseline,0.5333333333333333,How do the ten commandments apply today?
+Dirichlet LM,Baseline,0.6666666666666666,Where does God show up in our lives if he is not bounded by this world?
+Dirichlet LM,Baseline,0.8,Who were the kings of Israel and were they faithful to God?
+Dirichlet LM,Baseline,0.4666666666666667,What are the eternal consequences of sin?
+Dirichlet LM,Baseline,0.26666666666666666,Why did Jesus die on the cross?
+Dirichlet LM,Baseline,0.4,How can we be faithful to God?
+Dirichlet LM,Baseline,0.8,Where does God lead his people to?
+Dirichlet LM,Baseline,0.8,Who are the enemies of God?
+Dirichlet LM,Baseline,0.6,What did God do to unloyal servants?
+Dirichlet LM,Baseline,0.5333333333333333,Why should we listen to authority and what are the exceptions?
+Dirichlet LM,Baseline,0.13333333333333333,How do we get saved and know when we are saved?
+Dirichlet LM,Baseline,0.2,Where did Paul travel to spread the good news?
+Dirichlet LM,Baseline,0.4,Who does God want us to reach out to?
+Dirichlet LM,Baseline,0.6666666666666666,What does God say about spirituality?
+Dirichlet LM,Baseline,0.4666666666666667,Why did Judas betray Jesus?
 Dirichlet LM,Baseline,0.3333333333333333,How do we face discrimination and injustice?
-Dirichlet LM,Baseline,0.3333333333333333,Where do we find comfort and peace?
-Dirichlet LM,Baseline,0.9333333333333333,Who has received prophecies from God?
-Bi-Encoder,Baseline,0.6,What did God do to unloyal servants?
-Bi-Encoder,Baseline,0.6,Why should we listen to authority and what are the exceptions?
-Bi-Encoder,Baseline,0.2,How do we get saved and know when we are saved?
-Bi-Encoder,Baseline,0.2,Where did Paul travel to spread the good news?
-Bi-Encoder,Baseline,0.4,Who does God want us to reach out to?
-Bi-Encoder,Baseline,0.6666666666666666,What does God say about spirituality?
-Bi-Encoder,Baseline,0.5333333333333333,Why did Judas betray Jesus?
-Bi-Encoder,Baseline,0.26666666666666666,How do we face discrimination and injustice?
-Bi-Encoder,Baseline,0.5333333333333333,Where do we find comfort and peace?
-Bi-Encoder,Baseline,0.7333333333333333,Who has received prophecies from God?
-L2R,Bible Search Engine,0.7333333333333333,What did God do to unloyal servants?
-L2R,Bible Search Engine,0.8,Why should we listen to authority and what are the exceptions?
-L2R,Bible Search Engine,0.8,How do we get saved and know when we are saved?
-L2R,Bible Search Engine,0.8666666666666667,Where did Paul travel to spread the good news?
-L2R,Bible Search Engine,0.8666666666666667,Who does God want us to reach out to?
-L2R,Bible Search Engine,1.0,What does God say about spirituality?
-L2R,Bible Search Engine,0.8666666666666667,Why did Judas betray Jesus?
-L2R,Bible Search Engine,0.9333333333333333,How do we face discrimination and injustice?
-L2R,Bible Search Engine,0.8,Where do we find comfort and peace?
+Dirichlet LM,Baseline,0.4,Where do we find comfort and peace?
+Dirichlet LM,Baseline,0.6666666666666666,Who has received prophecies from God?
+Colbert,Baseline,0.6666666666666666,What is the significance of the covenant God made with Abraham?
+Colbert,Baseline,0.6,"If God is merciful and kind, why do people still suffer in this world?"
+Colbert,Baseline,0.8666666666666667,How do the ten commandments apply today?
+Colbert,Baseline,0.8666666666666667,Where does God show up in our lives if he is not bounded by this world?
+Colbert,Baseline,0.7333333333333333,Who were the kings of Israel and were they faithful to God?
+Colbert,Baseline,0.4666666666666667,What are the eternal consequences of sin?
+Colbert,Baseline,0.4,Why did Jesus die on the cross?
+Colbert,Baseline,0.5333333333333333,How can we be faithful to God?
+Colbert,Baseline,0.8,Where does God lead his people to?
+Colbert,Baseline,0.6666666666666666,Who are the enemies of God?
+Colbert,Baseline,0.3333333333333333,What did God do to unloyal servants?
+Colbert,Baseline,0.4666666666666667,Why should we listen to authority and what are the exceptions?
+Colbert,Baseline,0.3333333333333333,How do we get saved and know when we are saved?
+Colbert,Baseline,0.7333333333333333,Where did Paul travel to spread the good news?
+Colbert,Baseline,0.26666666666666666,Who does God want us to reach out to?
+Colbert,Baseline,0.6666666666666666,What does God say about spirituality?
+Colbert,Baseline,0.6666666666666666,Why did Judas betray Jesus?
+Colbert,Baseline,0.5333333333333333,How do we face discrimination and injustice?
+Colbert,Baseline,0.6666666666666666,Where do we find comfort and peace?
+Colbert,Baseline,0.8666666666666667,Who has received prophecies from God?
+Bi-Encoder,Baseline,0.5333333333333333,What is the significance of the covenant God made with Abraham?
+Bi-Encoder,Baseline,0.7333333333333333,"If God is merciful and kind, why do people still suffer in this world?"
+Bi-Encoder,Baseline,0.4666666666666667,How do the ten commandments apply today?
+Bi-Encoder,Baseline,0.7333333333333333,Where does God show up in our lives if he is not bounded by this world?
+Bi-Encoder,Baseline,0.6666666666666666,Who were the kings of Israel and were they faithful to God?
+Bi-Encoder,Baseline,0.13333333333333333,What are the eternal consequences of sin?
+Bi-Encoder,Baseline,0.5333333333333333,Why did Jesus die on the cross?
+Bi-Encoder,Baseline,0.8,How can we be faithful to God?
+Bi-Encoder,Baseline,0.7333333333333333,Where does God lead his people to?
+Bi-Encoder,Baseline,0.8,Who are the enemies of God?
+Bi-Encoder,Baseline,0.2,What did God do to unloyal servants?
+Bi-Encoder,Baseline,0.5333333333333333,Why should we listen to authority and what are the exceptions?
+Bi-Encoder,Baseline,0.3333333333333333,How do we get saved and know when we are saved?
+Bi-Encoder,Baseline,0.6666666666666666,Where did Paul travel to spread the good news?
+Bi-Encoder,Baseline,0.3333333333333333,Who does God want us to reach out to?
+Bi-Encoder,Baseline,0.6,What does God say about spirituality?
+Bi-Encoder,Baseline,0.4666666666666667,Why did Judas betray Jesus?
+Bi-Encoder,Baseline,0.6,How do we face discrimination and injustice?
+Bi-Encoder,Baseline,0.6666666666666666,Where do we find comfort and peace?
+Bi-Encoder,Baseline,0.6,Who has received prophecies from God?
+L2R,Bible Search Engine,0.9333333333333333,What is the significance of the covenant God made with Abraham?
+L2R,Bible Search Engine,1.0,"If God is merciful and kind, why do people still suffer in this world?"
+L2R,Bible Search Engine,0.8666666666666667,How do the ten commandments apply today?
+L2R,Bible Search Engine,1.0,Where does God show up in our lives if he is not bounded by this world?
+L2R,Bible Search Engine,0.8666666666666667,Who were the kings of Israel and were they faithful to God?
+L2R,Bible Search Engine,0.5333333333333333,What are the eternal consequences of sin?
+L2R,Bible Search Engine,0.9333333333333333,Why did Jesus die on the cross?
+L2R,Bible Search Engine,1.0,How can we be faithful to God?
+L2R,Bible Search Engine,0.8666666666666667,Where does God lead his people to?
+L2R,Bible Search Engine,1.0,Who are the enemies of God?
+L2R,Bible Search Engine,0.6,What did God do to unloyal servants?
+L2R,Bible Search Engine,0.7333333333333333,Why should we listen to authority and what are the exceptions?
+L2R,Bible Search Engine,0.4666666666666667,How do we get saved and know when we are saved?
+L2R,Bible Search Engine,0.9333333333333333,Where did Paul travel to spread the good news?
+L2R,Bible Search Engine,0.6,Who does God want us to reach out to?
+L2R,Bible Search Engine,0.9333333333333333,What does God say about spirituality?
+L2R,Bible Search Engine,0.8,Why did Judas betray Jesus?
+L2R,Bible Search Engine,0.6,How do we face discrimination and injustice?
+L2R,Bible Search Engine,0.7333333333333333,Where do we find comfort and peace?
 L2R,Bible Search Engine,0.9333333333333333,Who has received prophecies from God?
